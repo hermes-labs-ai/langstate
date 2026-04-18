@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "langstate"
+version = "0.1.0"
+description = "Scaffold-aware context compression for OpenAI-format messages. Compresses conversation history via local Ollama model at zero cost."
+readme = "README.md"
+license = "Apache-2.0"
+authors = [{name = "Rolando Bosch", email = "rbosch@lpci.ai"}]
+maintainers = [{name = "Hermes Labs", email = "info@hermes-labs.ai"}]
+requires-python = ">=3.10"
+dependencies = []
+
+[project.urls]
+Homepage = "https://hermes-labs.ai"
+Repository = "https://github.com/roli-lpci/langstate"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]

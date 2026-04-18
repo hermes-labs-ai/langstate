@@ -1,0 +1,20 @@
+# langstate
+
+## What it does
+
+langstate compresses OpenAI-format chat message arrays while preserving conversational state. It uses a local Ollama model (qwen3:4b) to summarize older conversation turns into a scaffold state summary, keeping the system prompt and recent turns verbatim. Achieves 51-54% compression ratio at zero cost.
+
+## Usage
+
+```python
+from langstate.compress import compress
+
+compressed = compress(messages)
+# Returns a shorter messages array in the same OpenAI format
+# System prompt preserved, recent turns preserved, older turns compressed into a scaffold state summary
+```
+
+## Requirements
+
+- Python 3.10+
+- Ollama running locally with qwen3:4b pulled
