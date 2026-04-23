@@ -1,43 +1,67 @@
 # AGENTS.md — langstate
 
-## What this project is
-LLM-based semantic compression for OpenAI-format message arrays. Single Python function: `compress(messages) -> messages`. Uses local Ollama (qwen3:4b) for zero API cost. Preserves conversational state while reducing tokens ~50-55%.
+`langstate` is a scaffold-aware context compression library for OpenAI-format
+messages. Single public function: `compress(messages) -> messages`. Backed by
+the LPCI thesis: stateless LLMs hold state via language scaffold, TE approximately
+zero (Markov property).
 
-## Key files
-- `compress.py` — the entire library. One public function: `compress()`. ~130 lines.
-- `test_compress.py` — 6 test cases covering empty, 1-turn, 5-turn, 20-turn, 25-turn, and state preservation.
-- `__init__.py` — re-exports `compress` from `compress.py`.
+## Use it for
 
-## How it works
-1. System prompt(s) kept verbatim
-2. Last 4 turn-pairs (8 messages) kept verbatim
-3. Everything else formatted as `[ROLE]: content` and sent to local Ollama for scaffold-aware summarization
-4. Summary inserted as a `[SCAFFOLD STATE]` system message
-5. Output is valid OpenAI chat format
+- compressing long agent conversations before passing to any OpenAI-compatible API
+- reducing token costs in production multi-turn pipelines
+- running local-first compression (Ollama) with no API costs
 
-## Running tests
-```bash
-cd ~/Documents/projects/langstate
-python3 test_compress.py
+## Do not use it for
+
+- conversations under 6 turns (compression is skipped automatically)
+- paths requiring exact verbatim history
+- real-time inference where compression latency is a concern
+
+## Repository layout
+
 ```
-Requires Ollama running locally with qwen3:4b loaded.
+src/langstate/          Package source
+  __init__.py           Re-exports compress
+  compress.py           Single public function: compress()
+  adapters.py           Ollama / OpenAI / Anthropic summarizer backends
+  te_check.py           Transfer-entropy proxy benchmark (research utility)
+tests/                  Pytest suite (13 tests)
+  test_compress.py      Format, compression ratio, state preservation
+  test_adapters.py      Adapter protocol + registry + network-free integration
+```
 
-## Dependencies
-- Python 3.10+
-- Ollama running at localhost:11434 with qwen3:4b
-- No pip dependencies (uses only stdlib: json, urllib)
+## Minimal commands
 
-## Design constraints
-- No paid APIs — local Ollama only
-- No framework dependencies — stdlib only
-- No server/CLI — library function only
-- Correctness first, speed later
-- Scaffold-aware: preserves facts, decisions, task state — not generic summarization
+```bash
+pip install -e ".[dev]"
+python -m pytest tests/ -q
+```
 
-## Backed by
-LPCI thesis (roli-lpci/langquant): stateless LLMs hold state via language scaffold, TE≈0 (Markov property), 2.5x compression. This function is the productization of that proof.
+Requires Ollama running locally with qwen3:4b or qwen3:14b pulled for Ollama-backed tests.
 
-## Related repos
-- `langquant` — the LPCI proof
-- `langquant-sdk` — TS prototypes (scaffold-monad, driftwatch, computetrace)
-- Research corpus at `~/Desktop/llm-scaffold-research/` (530MB, 1401 files)
+## Output shape
+
+- `compress(messages)` returns a shorter list in the same OpenAI format
+- System prompts preserved verbatim
+- Last 4 turn-pairs preserved verbatim
+- Older turns → `[SCAFFOLD STATE — compressed from N earlier messages]\n<summary>` system message
+
+## Success means
+
+- 13/13 tests pass
+- `compress(make_messages(20))` returns fewer tokens with state facts preserved
+- `compress(make_messages(5))` returns input unchanged (below threshold)
+
+## Adapters
+
+Three production adapters in `src/langstate/adapters.py`:
+- `local` — qwen3:14b via Ollama (no key, zero cost)
+- `openai` — gpt-4o-mini (env OPENAI_API_KEY)
+- `anthropic` — claude-opus-4-7 (env ANTHROPIC_API_KEY)
+
+Any callable `(prompt: str) -> str` works as a custom summarizer.
+
+## Relationship to research
+
+- `langquant` (roli-lpci/langquant) — the LPCI proof, TE≈0, Markov sufficiency
+- `langquant-sdk` (private) — TS prototypes: scaffold-monad, driftwatch, computetrace

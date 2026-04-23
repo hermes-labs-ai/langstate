@@ -1,23 +1,54 @@
 [build-system]
-requires = ["setuptools>=45", "wheel"]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "langstate"
 version = "0.1.0"
-description = "Scaffold-aware context compression for OpenAI-format messages. Compresses conversation history via local Ollama model at zero cost."
+description = "Scaffold-aware context compression for OpenAI-format messages — preserve state at 50%+ token reduction via local Ollama, OpenAI, or Anthropic"
 readme = "README.md"
-license = "Apache-2.0"
+license = {text = "Apache-2.0"}
 authors = [{name = "Rolando Bosch", email = "rbosch@lpci.ai"}]
 maintainers = [{name = "Hermes Labs", email = "info@hermes-labs.ai"}]
 requires-python = ">=3.10"
 dependencies = []
+keywords = [
+    "llm",
+    "context-compression",
+    "scaffold",
+    "agent",
+    "ollama",
+    "openai",
+    "token-optimization",
+    "language-state",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 
 [project.urls]
 Homepage = "https://hermes-labs.ai"
-Repository = "https://github.com/roli-lpci/langstate"
+Repository = "https://github.com/hermes-labs-ai/langstate"
+Issues = "https://github.com/hermes-labs-ai/langstate/issues"
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
+    "ruff>=0.4.0",
 ]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

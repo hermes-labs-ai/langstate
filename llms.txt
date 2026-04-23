@@ -1,20 +1,80 @@
 # langstate
 
-## What it does
+Scaffold-aware context compression for OpenAI-format messages. Compresses
+conversation history into a state-preserving scaffold summary, keeping the
+system prompt and recent turns verbatim. Achieves 50-54% compression at zero
+or low cost via local Ollama, OpenAI, or Anthropic adapters.
 
-langstate compresses OpenAI-format chat message arrays while preserving conversational state. It uses a local Ollama model (qwen3:4b) to summarize older conversation turns into a scaffold state summary, keeping the system prompt and recent turns verbatim. Achieves 51-54% compression ratio at zero cost.
+## What it is
 
-## Usage
+`compress(messages)` takes an OpenAI-format messages list and returns a shorter
+one that preserves all conversational state:
 
-```python
-from langstate.compress import compress
+- System prompts kept verbatim
+- Last 4 turn-pairs kept verbatim
+- Older turns summarized into a `[SCAFFOLD STATE]` system message
+- Output is valid OpenAI chat format, drop-in for any OpenAI-compatible API
 
-compressed = compress(messages)
-# Returns a shorter messages array in the same OpenAI format
-# System prompt preserved, recent turns preserved, older turns compressed into a scaffold state summary
+Backed by the LPCI thesis (roli-lpci/langquant): stateless LLMs hold state via
+language scaffold with transfer entropy approximately zero (Markov property).
+
+## When to use
+
+- Long-running agent conversations approaching context limits
+- Reducing token costs in production multi-turn pipelines
+- Any OpenAI-compatible API: gpt-4o, claude-*, gemini, local Ollama
+
+## When not to use
+
+- Short conversations (under 6 turns — compression is skipped automatically)
+- When exact verbatim history is required (prefer full context)
+- Real-time inference paths where the compression latency is unacceptable
+
+## Install
+
+```
+pip install langstate
 ```
 
-## Requirements
+Requires: Python 3.10+. No heavy dependencies (urllib only).
 
-- Python 3.10+
-- Ollama running locally with qwen3:4b pulled
+## Key functions
+
+```python
+from langstate import compress
+from langstate.adapters import build, probe, REGISTRY
+
+# Local Ollama (zero cost, default)
+compressed = compress(messages)
+
+# Custom adapter (OpenAI, Anthropic, or any callable)
+compressed = compress(messages, summarizer=build("openai"))
+
+# Check available adapters
+for name in REGISTRY:
+    print(probe(name))
+```
+
+## Adapters
+
+- `local` — qwen3:14b via Ollama (no API key, localhost:11434)
+- `openai` — gpt-4o-mini (env OPENAI_API_KEY)
+- `anthropic` — claude-opus-4-7 (env ANTHROPIC_API_KEY)
+
+Any callable `(prompt: str) -> str` works as a custom summarizer.
+
+## Configuration
+
+```python
+compress(
+    messages,
+    preserve_recent=4,         # turn-pairs to keep verbatim
+    min_turns_to_compress=6,   # skip compression for short conversations
+    summarizer=None,           # defaults to local Ollama qwen3:4b
+)
+```
+
+## Source
+
+https://github.com/hermes-labs-ai/langstate
+Apache-2.0. Part of the Hermes Labs audit infrastructure stack.

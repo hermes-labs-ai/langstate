@@ -1,0 +1,26 @@
+{
+  "corpus_size": 100,
+  "ground_truth_facts": 20,
+  "results": [
+    {
+      "adapter": "local",
+      "label": "qwen3:14b (Ollama)",
+      "available": true,
+      "input_tokens": 1253,
+      "output_tokens": 398,
+      "compression": 0.682,
+      "latency_ms": 130690,
+      "fact_hits": 15,
+      "fact_total": 20,
+      "fact_survival": 0.75,
+      "missing_facts": [
+        "measurement",
+        "corpus_size",
+        "arxiv_papers",
+        "benchmarks",
+        "distribution"
+      ],
+      "scaffold_chars": 1201
+    }
+  ]
+}

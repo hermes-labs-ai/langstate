@@ -1,0 +1,20 @@
+{
+  "corpus_size": 100,
+  "ground_truth_facts": 20,
+  "results": [
+    {
+      "adapter": "openai",
+      "label": "gpt-4o-mini",
+      "available": true,
+      "input_tokens": 1253,
+      "output_tokens": 546,
+      "compression": 0.564,
+      "latency_ms": 8223,
+      "fact_hits": 20,
+      "fact_total": 20,
+      "fact_survival": 1.0,
+      "missing_facts": [],
+      "scaffold_chars": 1792
+    }
+  ]
+}
