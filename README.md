@@ -22,7 +22,8 @@ The output is a valid OpenAI-format messages list:
 ## Install
 
 ```bash
-pip install langstate
+# From GitHub (PyPI coming soon):
+pip install git+https://github.com/hermes-labs-ai/langstate.git
 ```
 
 Requirements: Python 3.10+, no heavy dependencies (stdlib only). For local summarization, run [Ollama](https://ollama.ai) locally:
