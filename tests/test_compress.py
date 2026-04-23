@@ -1,6 +1,26 @@
 """Tests for langstate.compress — validates format, compression ratio, and state preservation."""
 
+import urllib.error
+import urllib.request
+
+import pytest
+
 from langstate.compress import compress, _count_messages_tokens
+
+
+def _ollama_reachable() -> bool:
+    """Check if Ollama is running at localhost:11434. CI runners don't have it."""
+    try:
+        urllib.request.urlopen("http://localhost:11434/api/tags", timeout=2)
+        return True
+    except (urllib.error.URLError, OSError):
+        return False
+
+
+requires_ollama = pytest.mark.skipif(
+    not _ollama_reachable(),
+    reason="requires local Ollama at :11434 (integration test)",
+)
 
 
 def make_messages(n_turns: int, system: str = "You are a helpful assistant.") -> list[dict]:
@@ -76,6 +96,7 @@ def test_five_turns():
     assert len(result) == len(msgs)
 
 
+@requires_ollama
 def test_twenty_turns():
     msgs = make_messages(20)
     result = compress(msgs)
@@ -87,6 +108,7 @@ def test_twenty_turns():
     assert len(result) < len(msgs)
 
 
+@requires_ollama
 def test_twenty_five_turns():
     msgs = make_messages(25)
     result = compress(msgs)
@@ -97,6 +119,7 @@ def test_twenty_five_turns():
     assert ratio > 0.25
 
 
+@requires_ollama
 def test_state_preservation():
     msgs = make_messages(20)
     compressed = compress(msgs)
