@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Scaffold-aware context compression for OpenAI-format messages — preserve state at 50%+ token reduction via local Ollama, OpenAI, or Anthropic"
 readme = "README.md"
 license = {text = "Apache-2.0"}
-authors = [{name = "Rolando Bosch", email = "rbosch@lpci.ai"}]
+authors = [{name = "Rolando Bosch", email = "roli@hermes-labs.ai"}]
 maintainers = [{name = "Hermes Labs", email = "info@hermes-labs.ai"}]
 requires-python = ">=3.10"
 dependencies = []
