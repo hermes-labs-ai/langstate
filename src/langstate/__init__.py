@@ -1,3 +1,7 @@
-from langstate.compress import compress
+"""langstate — scaffold-aware context compression with a facts-survived receipt."""
 
-__all__ = ["compress"]
+from langstate.compress import compress
+from langstate.validate import Receipt, extract_facts, validate
+
+__version__ = "0.1.0"
+__all__ = ["compress", "validate", "Receipt", "extract_facts", "__version__"]

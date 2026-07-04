@@ -9,10 +9,10 @@ of langstate. API keys are read from the environment, not arguments —
 adapters raise ``AdapterUnavailable`` when their key or backend is missing
 so callers can gracefully degrade to the local adapter.
 
-Production targets (one default per provider, per the Hermes spec):
-    - Anthropic: claude-opus-4-7           (env ANTHROPIC_API_KEY)
+Production targets (one cheap default per provider, per the Hermes spec):
+    - Anthropic: claude-haiku-4-5          (env ANTHROPIC_API_KEY)
     - OpenAI:    gpt-4o-mini               (env OPENAI_API_KEY)
-    - Local:     qwen3:14b via Ollama      (no key, localhost:11434)
+    - Local:     qwen3:4b via Ollama       (no key, localhost:11434) — the default
 """
 
 from __future__ import annotations
@@ -36,7 +36,7 @@ class AdapterUnavailable(RuntimeError):
 # ---------------------------------------------------------------------------
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
-DEFAULT_LOCAL_MODEL = "qwen3:14b"
+DEFAULT_LOCAL_MODEL = "qwen3:4b"  # small, fast, zero-cost; the library-wide default
 
 
 def ollama(
@@ -132,7 +132,7 @@ def openai(
 # ---------------------------------------------------------------------------
 
 ANTHROPIC_URL = "https://api.anthropic.com/v1/messages"
-DEFAULT_ANTHROPIC_MODEL = "claude-opus-4-7"
+DEFAULT_ANTHROPIC_MODEL = "claude-haiku-4-5-20251001"
 ANTHROPIC_VERSION = "2023-06-01"
 
 
@@ -188,9 +188,9 @@ def anthropic(
 # ---------------------------------------------------------------------------
 
 REGISTRY = {
-    "local":     ("qwen3:14b (Ollama)",          ollama),
+    "local":     ("qwen3:4b (Ollama)",           ollama),
     "openai":    ("gpt-4o-mini",                 openai),
-    "anthropic": ("claude-opus-4-7",             anthropic),
+    "anthropic": ("claude-haiku-4-5",            anthropic),
 }
 
 

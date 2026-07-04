@@ -19,6 +19,33 @@ The output is a valid OpenAI-format messages list:
 - Last 4 turn-pairs kept verbatim
 - Older turns compressed into a `[SCAFFOLD STATE]` system message via local or cloud model
 
+## Prove the state survived — the receipt
+
+Compression that silently drops a fact is worse than no compression. `validate`
+returns a receipt — deterministic, no model call, runs in CI:
+
+```python
+from langstate import compress, validate
+
+compressed = compress(messages)
+
+# Check the specific facts you care about:
+receipt = validate(messages, compressed,
+                   facts=["$4,000 budget", "launch May 5", "Dana"])
+
+print(receipt.summary())   # "3/3 facts survived (100%) · 52% smaller"
+print(receipt.dropped)     # [] — nothing lost
+assert receipt.ok          # gate your pipeline on it
+
+# Or let it auto-extract salient facts (numbers, money, acronyms, names):
+receipt = validate(messages, compressed)
+```
+
+The check is intentionally *lexical* — a fact counts as survived only if it is
+present verbatim in the compressed messages. That under-counts (it can't credit
+a paraphrase) rather than over-claims — the honest direction for a receipt.
+`receipt.as_dict()` gives a JSON-friendly record to log.
+
 ## Install
 
 ```bash
@@ -38,9 +65,9 @@ langstate ships three built-in summarizer backends:
 
 | Adapter | Model | Cost | Key |
 |---|---|---|---|
-| `local` (default) | qwen3:14b via Ollama | zero | none |
+| `local` (default) | qwen3:4b via Ollama | zero | none |
 | `openai` | gpt-4o-mini | API | `OPENAI_API_KEY` |
-| `anthropic` | claude-opus-4-7 | API | `ANTHROPIC_API_KEY` |
+| `anthropic` | claude-haiku-4-5 | API | `ANTHROPIC_API_KEY` |
 
 ```python
 from langstate import compress
@@ -70,6 +97,33 @@ compress(
     summarizer=None,           # custom callable: (prompt: str) -> str
 )
 ```
+
+## Choosing a model
+
+**The default is local `qwen3:4b` via Ollama** — chosen deliberately: no API key,
+zero cost, and quick to pull. It compresses hard and fast; on smaller models a
+fact or two can slip, which is exactly what `validate` is for — measure it,
+don't assume it.
+
+Pick by what you're optimizing:
+
+| Want | Use | Trade-off |
+|---|---|---|
+| Zero cost, no key, offline | `local` — qwen3:4b (default) | fastest setup; verify fidelity with `validate` |
+| Highest fidelity, cheap | `openai` — gpt-4o-mini | a few cents; kept every planted fact in our bench |
+| Anthropic stack | `anthropic` — claude-haiku-4-5 | cheap tier; needs `ANTHROPIC_API_KEY` |
+| Full control | your own `summarizer=` | any `(prompt: str) -> str` callable |
+
+Switching is one argument:
+
+```python
+compress(messages)                              # local qwen3:4b (default)
+compress(messages, model="qwen3:14b")           # bigger local model, slower, higher fidelity
+compress(messages, summarizer=build("openai"))  # cloud, highest fidelity
+```
+
+If fidelity matters more than cost, run `validate` on a sample of your traffic
+and move up a tier until the receipt is green.
 
 ## Adapter probe
 

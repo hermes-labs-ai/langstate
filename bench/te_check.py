@@ -38,12 +38,13 @@ import urllib.error
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-if str(HERE) not in sys.path:
-    sys.path.insert(0, str(HERE))
+ROOT = HERE.parent  # repo root, where bench_adapters.py lives
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
-from adapters import REGISTRY, AdapterUnavailable, build  # noqa: E402
+from langstate.adapters import REGISTRY, AdapterUnavailable, build  # noqa: E402
+from langstate.compress import compress  # noqa: E402
 from bench_adapters import build_corpus_100  # noqa: E402
-from compress import compress  # noqa: E402
 
 
 PROBE_MODEL = "qwen3:8b"

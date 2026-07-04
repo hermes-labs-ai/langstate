@@ -25,9 +25,9 @@ def _corpus(n_turns: int = 10) -> list[dict]:
 def test_registry_has_three_production_adapters():
     assert set(REGISTRY) == {"local", "openai", "anthropic"}
     labels = {name: REGISTRY[name][0] for name in REGISTRY}
-    assert "qwen3:14b" in labels["local"]
+    assert "qwen3:4b" in labels["local"]
     assert "gpt-4o-mini" in labels["openai"]
-    assert "claude-opus-4-7" in labels["anthropic"]
+    assert "claude-haiku-4-5" in labels["anthropic"]
 
 
 def test_build_openai_without_key_raises_adapter_unavailable():
