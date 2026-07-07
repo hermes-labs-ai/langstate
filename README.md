@@ -2,7 +2,7 @@
 
 Scaffold-aware context compression for OpenAI-format messages. `compress(messages)` preserves all conversational state — facts, decisions, task status, user preferences — while reducing tokens by 50-54%.
 
-Backed by the LPCI thesis: stateless LLMs hold state via language scaffold with transfer entropy approximately zero (Markov property). This is the productization of that proof.
+Built on the LPCI approach: stateless models hold working state through the language scaffold in their context. langstate productizes that idea — it compresses older history into a state-preserving `[SCAFFOLD STATE]` summary and ships a receipt proving which facts survived.
 
 ## What it does
 

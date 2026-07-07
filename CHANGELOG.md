@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.1.1
+
+Supersedes v0.1.0 on PyPI. Packaging and documentation correction — no API change.
+
+- Removed the internal `te_check.py` benchmark helper from the shipped package
+  (it was never part of the public API and carried project-specific test
+  fixtures). The compression and receipt code is unchanged.
+- Documentation no longer references a transfer-entropy figure; the README and
+  `llms.txt` now describe the LPCI approach in plain terms.
+- Generic example values in the `validate` docstring.
+
 ## v0.1.0
 
 First public release. `compress(messages)` plus a facts-survived receipt.

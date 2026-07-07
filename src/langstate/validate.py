@@ -14,7 +14,7 @@ in CI and gives you a hard receipt you can log next to every compression.
 
     # Or check the specific facts you actually care about:
     receipt = validate(messages, compressed,
-                       facts=["$4,000 budget", "launch May 5", "Roli"])
+                       facts=["$4,000 budget", "launch May 5", "Acme Corp"])
     for fact in receipt.dropped:
         print("LOST:", fact)
 

@@ -1,0 +1,8 @@
+# Keep the published sdist to the shipping package only.
+# tests/ carries project-specific fixtures that are not part of the public
+# API and must not appear on PyPI. Tests still run from a repo checkout.
+prune tests
+prune bench
+prune _workspace
+global-exclude te_check.py
+global-exclude *.pyc

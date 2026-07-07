@@ -15,8 +15,8 @@ one that preserves all conversational state:
 - Older turns summarized into a `[SCAFFOLD STATE]` system message
 - Output is valid OpenAI chat format, drop-in for any OpenAI-compatible API
 
-Backed by the LPCI thesis (roli-lpci/langquant): stateless LLMs hold state via
-language scaffold with transfer entropy approximately zero (Markov property).
+Built on the LPCI approach: stateless models hold working state through the
+language scaffold in their context.
 
 ## When to use
 
