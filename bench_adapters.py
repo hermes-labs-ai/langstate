@@ -8,8 +8,8 @@ records, per adapter:
     - compression ratio (token-proxy, 4 chars per token)
     - wall latency
     - fact-survival rate: fraction of pre-baked ground-truth facts that
-      appear in the scaffold summary (honest proxy for state preservation
-      in lieu of a full transfer-entropy pipeline)
+      appear in the scaffold summary (a simple lexical proxy for state
+      preservation, not a formal information-theoretic measure)
 
 Unreachable adapters are skipped with a reason; the bench still completes.
 Output is both a human-readable table on stdout and a JSON artifact at
@@ -44,26 +44,26 @@ from compress import _count_messages_tokens, compress  # noqa: E402
 # ---------------------------------------------------------------------------
 
 GROUND_TRUTH = [
-    ("founder_name",       "Roli"),
-    ("company_name",       "Hermes Labs"),
-    ("thesis",             "LPCI"),
-    ("measurement",        "transfer entropy"),
-    ("key_result",         "TE"),
-    ("compression_ratio",  "2.5x"),
-    ("first_product",      "compress(messages)"),
+    ("founder_name",       "Dana"),
+    ("project_name",       "NoteFlow"),
+    ("approach",           "keyword clustering"),
+    ("measurement",        "grouping accuracy"),
+    ("key_result",         "78%"),
+    ("compression_ratio",  "50%"),
+    ("first_product",      "notes(text)"),
     ("local_model",        "qwen3"),
-    ("deadline_event",     "NeurIPS"),
-    ("corpus_size",        "530MB"),
-    ("arxiv_papers",       "155"),
-    ("benchmarks",         "718"),
-    ("related_competitor", "Millidge"),
-    ("universal_result",   "Schuurmans"),
-    ("tam_angle",          "compliance"),
-    ("seed_ask",           "$2M"),
-    ("follow_on_paper",    "multi-agent"),
-    ("pricing_model",      "hosted API"),
+    ("milestone_event",    "v0.1 tag"),
+    ("test_set_size",      "50 files"),
+    ("related_project",    "TagSort"),
+    ("benchmark_script",   "benchmark script"),
+    ("related_competitor", "TagSort"),
+    ("secondary_audience", "students"),
+    ("tam_angle",          "developers"),
+    ("budget",             "zero budget"),
+    ("follow_on_feature",  "GUI wrapper"),
+    ("pricing_model",      "free/open source"),
     ("distribution",       "open source"),
-    ("tool_name",          "ScaffoldGit"),
+    ("tool_name",          "NoteFlow CLI"),
 ]
 
 
@@ -84,44 +84,44 @@ def build_corpus_100() -> list[dict]:
     msgs: list[dict] = [{"role": "system", "content": "You are a helpful research strategist."}]
 
     seed_turns = [
-        ("My name is Roli and I'm building a company called Hermes Labs focused on AI audit.",
-         "Good to meet you, Roli. Hermes Labs — what's the product wedge?"),
-        ("Our thesis is LPCI: stateless LLMs hold state via language scaffold. "
-         "We measured transfer entropy from scaffold to model output and got TE approximately zero.",
-         "TE ≈ 0 is a strong claim. How did you measure?"),
-        ("Across 500 inference calls we clocked a 2.5x compression ratio with Markov sufficiency preserved.",
-         "2.5x with Markov sufficiency is defensible. What ships first?"),
-        ("The first product is compress(messages) — a middleware that any agent framework can call. "
-         "We run it on a local qwen3 model so the MVP has zero per-call cost.",
-         "Clean wedge. Who pays for it?"),
-        ("Agent framework builders in production. Enterprise compliance is the bigger angle.",
-         "Compliance reads well against the EU AI Act. Timeline?"),
-        ("Preprint before NeurIPS 2026 submission in May. Priority date matters.",
-         "Tight. What's the related-work landscape look like?"),
-        ("Corpus: 530MB, 155 arxiv papers, 718 benchmarks. TE appears zero times in 470MB of related work.",
-         "Uncontested novelty. Closest neighbours?"),
-        ("Schuurmans proved autoregressive chaining equals universal computation. Millidge made the qualitative claim in 2023.",
-         "Frame as Millidge's empirical proof. Lead with the measurement."),
-        ("The VC pitch bundles ScaffoldGit + Driftwatch as Agent Observability. $2M seed ask.",
-         "Version control + monitoring, LPCI as correctness theory. Strong narrative."),
-        ("Distribution: open source the library, revenue from hosted API. Multi-agent paper is the follow-on.",
-         "Sequence is right — single-agent first, multi-agent next. Don't split focus."),
+        ("My name is Dana and I'm building a small side project called NoteFlow.",
+         "Good to meet you, Dana. NoteFlow — what's the core feature?"),
+        ("The idea is automatic note grouping by topic. "
+         "I measured grouping accuracy on a labeled test set and got 78%.",
+         "78% is a solid starting point. How did you measure it?"),
+        ("Across 50 test files I clocked roughly 50% token reduction with grouping preserved.",
+         "50% reduction with grouping preserved is a reasonable tradeoff. What ships first?"),
+        ("The first product is notes(text) — a small CLI that any editor can call. "
+         "It runs on a local qwen3 model so the MVP has zero per-call cost.",
+         "Clean wedge. Who's it for?"),
+        ("Developers keeping plain-text scratch notes. Students are the secondary audience.",
+         "Both value fast capture over polish. Timeline?"),
+        ("Short write-up once accuracy is good enough, no hard deadline.",
+         "Reasonable. What's the current comparison landscape look like?"),
+        ("Test set: 50 note files, one small labeled sample. TagSort is a similar tool using tags.",
+         "Worth a short comparison. Any other close neighbours?"),
+        ("Not that I've found yet — most similar tools use full embeddings, which cost more to run.",
+         "Worth calling that tradeoff out explicitly in the write-up."),
+        ("The rough plan is CLI, then benchmark script, then decide on a GUI wrapper.",
+         "Sequence is right — CLI and benchmark first, GUI later. Don't split focus."),
+        ("Distribution: open source the CLI, no revenue plan for now. GUI is a possible follow-on.",
+         "Sequence is right — ship the CLI, gather feedback, decide on the GUI after."),
     ]
     for u, a in seed_turns:
         msgs.extend(_make_turn(u, a))
 
     # Fill to 100 messages with mid-salience noise that refers back to project state.
     filler = [
-        ("How do I think about pricing tiers?", "Metered on compressed tokens. $X per million. Enterprise flat."),
-        ("Which design partners should I target first?", "Fintech compliance teams and legal tech vendors. Concrete pain."),
-        ("Should I hire a researcher before a PM?", "Researcher. The wedge is still academic."),
-        ("What's the right blog cadence?", "One technical post per week through launch."),
+        ("How do I think about versioning?", "Semantic versioning, tag v0.1 once tests are green."),
+        ("Which users should I get feedback from first?", "A few developers who already keep plain-text notes. Concrete use case."),
+        ("Should I write more tests before adding features?", "Tests first. Lock in current behavior before you change it."),
+        ("What's the right blog cadence?", "One short post once the benchmark numbers are stable."),
         ("Do I open up a Discord?", "Not yet. GitHub issues are enough while the userbase is small."),
-        ("How do I defend against copycats?", "The proof is the moat. Citations and early customer logos."),
-        ("Should I file a provisional patent?", "No. Open science plays better here and patents slow you down."),
-        ("What's the hiring profile for the second engineer?", "Infra-leaning Python generalist. Must read papers."),
-        ("How do I structure the board?", "One investor seat, one independent, one you. Keep it boring."),
-        ("When should I raise the A?", "Twelve months after seed or at $100k MRR, whichever is first."),
+        ("How do I get more users?", "Share the benchmark numbers and the write-up. Let the results speak."),
+        ("Should I file anything formal before sharing this?", "No, this is a small open-source side project — just ship it."),
+        ("What's the profile for a second contributor?", "Someone comfortable with small Python CLIs who enjoys reading benchmark output."),
+        ("How should I track feedback?", "A simple GitHub issues board is enough at this size."),
+        ("When should I consider a GUI?", "After the CLI is stable and the benchmark numbers hold up."),
     ]
     while len(msgs) < 100:
         for u, a in filler:

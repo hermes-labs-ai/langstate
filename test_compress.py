@@ -12,31 +12,31 @@ def make_messages(n_turns: int, system: str = "You are a helpful assistant.") ->
     """Generate a realistic multi-turn conversation with trackable facts."""
     msgs = [{"role": "system", "content": system}]
     facts = [
-        ("My name is Roli and I'm building a company called Hermes Labs.", "Nice to meet you, Roli! Hermes Labs sounds interesting. What does Hermes Labs do?"),
-        ("We're building AI infrastructure for agent state management. Our key innovation is LPCI — we proved that stateless LLMs hold state via language scaffold with TE approximately zero.", "That's fascinating! The TE≈0 finding means the scaffold carries all necessary state information. How did you measure this?"),
-        ("We measured transfer entropy from scaffold to LLM output across 500 inference calls. The compression ratio is 2.5x while maintaining Markov sufficiency.", "A 2.5x compression ratio while preserving Markov sufficiency is significant. What's the practical application?"),
-        ("The first product is a compression middleware — compress(messages) — that any agent framework can use. It reduces context cost by 2.5x.", "That's a clean MVP. Who are your target customers?"),
-        ("Agent framework builders running production workloads. Context cost is a real budget line for them. We're also looking at enterprise compliance use cases.", "Enterprise compliance is a strong angle — auditable language scaffold state vs opaque neural activations. What's your timeline?"),
-        ("We need to publish the arXiv preprint before NeurIPS 2026 submission deadline in May. The paper needs to be out first to establish priority.", "That's tight but doable. The related work section needs to map who else treats language as state — have you done that research?"),
-        ("Yes, we built a 530MB research corpus with 155 arxiv papers, 679 techniques, and 718 benchmarks. The key finding: transfer entropy appears zero times in 470MB of related work.", "So the TE≈0 measurement is completely uncontested. That's a strong novelty claim. Who are the closest competitors?"),
-        ("Schuurmans at Alberta proved autoregressive chaining equals universal computation in January 2026. Millidge at beren.io made the same qualitative claim in 2023. We're the quantitative proof.", "Position as Millidge's empirical proof — that's the strongest framing. Lead with the measurement, not the philosophy."),
-        ("We also found that cognitive science is completely absent from this field. 70 years of chunking research never cited.", "That's a potential bridge paper after the main LPCI publication. The 2.5x compression might correspond to known cognitive chunk density."),
-        ("The multi-agent case is the next paper. Proving TE≈0 for shared scaffold across agents is genuinely novel — novelty 5/5 but urgency 2/5.", "Correct sequence: single-agent paper first, then multi-agent as follow-on. Don't split focus."),
-        ("Budget is tight. We're bootstrapping. The compression middleware needs to generate revenue by month 3-4.", "Focus on the wedge product. compress(messages) → hosted API → enterprise contracts. Keep scope minimal."),
-        ("Our biggest risk is that long-context scaling makes compression less valuable. If Gemini 1M+ tokens gets cheap enough...", "True, but the TE≈0 proof survives academically regardless. And compression always saves money — even cheap tokens add up at scale."),
-        ("We're using qwen3:4b locally for the compression. Zero API cost.", "Smart — keeps the MVP free to run. You can always upgrade the compression model later without changing the interface."),
-        ("One more thing: we need to set up a weekly arXiv monitor for transfer entropy + LLM + scaffold.", "I'd automate that. If it returns results, read same day. The window is closing."),
-        ("The VC pitch is ScaffoldGit + Driftwatch bundled as Agent Observability. $2M seed.", "That's the right framing. Version control + monitoring for agent state, with LPCI's Markov theory as the only formal correctness model. Fintech and legal design partners first."),
-        ("Let's focus. What should I do today?", "Submit the arXiv preprint and ship compress(messages). Everything else follows from those two."),
-        ("Thanks. Let's do it.", "Let's go. Preprint first, then the MVP."),
-        ("Actually, one more question — should we open-source the compression or keep it proprietary?", "Open-source the library, charge for the hosted API. The proof is the moat, not the code. Open source gets you distribution and citations."),
-        ("Makes sense. Open source library, hosted API for revenue.", "Exactly. PyPI package → GitHub stars → citations → enterprise leads. The flywheel."),
-        ("What about the scaffold-monad idea? The state monad for LLM calls.", "That's the 10k-star GitHub project. Effort 2/5. 'We proved agent code correct' is a Hacker News post that writes itself. Build it after compress(messages)."),
-        ("OK I think we have a plan. Roli out.", "Good luck, Roli. Ship the preprint, ship compress(messages), then scaffold-monad. In that order."),
-        ("Wait — what was the NL-DST accuracy result again?", "90.1% slot accuracy for natural language state vs 88.5% for structured slot-value output. Same model, different state format. Language wins."),
-        ("And the ICAE compression ratio?", "4x compression but opaque embeddings. Your 2.5x is the interpretable compression benchmark. Different problem, defensible position."),
-        ("Perfect. Now I'm really done.", "Go ship. The window is measured in months, not years."),
-        ("One truly final thing: the PRISM paper from March 2026.", "arXiv:2603.22754. They model reasoning trajectories as Markov transition processes. Same vocabulary as LPCI but different measurement. Citation partner, not competitor."),
+        ("My name is Dana and I'm building a small app called NoteFlow.", "Nice to meet you, Dana! What does NoteFlow do?"),
+        ("It's a note-taking app that automatically groups related notes by topic.", "That's a useful feature. How are you grouping them under the hood?"),
+        ("I'm using simple keyword clustering for now, might move to embeddings later.", "Keyword clustering is a solid MVP choice — cheap and easy to debug."),
+        ("The first version is a command-line tool — notes(text) — that any editor can pipe into.", "Clean scope. Who's the target user for v1?"),
+        ("Developers who keep scratch notes in plain text files. Students are a secondary audience.", "Both groups value fast capture over polish. What's the timeline?"),
+        ("I want to publish a short write-up once the grouping accuracy is good enough.", "Reasonable. What does 'good enough' look like for the write-up?"),
+        ("Right now grouping accuracy is around 78% on my test set of 50 note files.", "78% is a fine starting point to write about, as long as you're clear it's a small test set."),
+        ("I also built a small benchmark script that scores grouping accuracy against a labeled sample.", "Good — having a repeatable benchmark early will save you from regressions later."),
+        ("I noticed most similar tools use full embeddings, which cost more to run.", "That's a legitimate tradeoff to call out — cheaper but less precise clustering."),
+        ("There's a related open-source project called TagSort that does something similar with tags instead of clusters.", "Worth a short comparison section — similar goal, different mechanism."),
+        ("I'm also curious whether note length affects grouping quality.", "That's an easy follow-up experiment: bucket notes by length and compare accuracy per bucket."),
+        ("Budget is basically zero — this is a side project I work on evenings.", "Then keep scope tight: ship the CLI, write the benchmark, then decide if a GUI is worth it."),
+        ("I'm running everything locally with a small open model, no API costs.", "Smart — keeps the project free to run and easy for others to reproduce."),
+        ("One more thing — I should set up a simple test suite before I add more features.", "Yes, lock in the current behavior with tests first, then iterate."),
+        ("The rough plan is: CLI tool, benchmark script, short write-up, then decide on next features.", "That's a sensible order — ship the smallest useful thing, measure it, then expand."),
+        ("Let's focus. What should I do today?", "Finish the benchmark script and write down the current accuracy number."),
+        ("Thanks. I'll do that.", "Sounds good — small steps."),
+        ("Should I open-source the CLI or keep it private for now?", "Open-source the CLI once the tests pass; that's usually the easiest way to get feedback."),
+        ("Makes sense. I'll tag a v0.1 once tests are green.", "Good plan — tag it, write a short README, and move on to the next feature."),
+        ("What about a GUI wrapper eventually?", "Worth considering after the CLI is stable, but it's a nice-to-have, not a blocker."),
+        ("OK I think I have a plan. Talk later.", "Sounds good — ship the CLI, write the benchmark, then decide on the GUI."),
+        ("Wait — what was the grouping accuracy number again?", "78% on your 50-file test set, per your last message."),
+        ("And how does that compare to TagSort?", "You hadn't benchmarked TagSort directly yet — that's a good next comparison to run."),
+        ("Got it, thanks.", "Anytime — go finish that benchmark script."),
+        ("One truly final thing — should the CLI support markdown input?", "Yes, plain text and markdown both, since most note files are one or the other."),
     ]
 
     for i in range(min(n_turns, len(facts))):
@@ -134,14 +134,14 @@ def test_fifty_turns():
 def test_state_preservation():
     """Test 6: Verify compressed messages preserve state from early turns.
 
-    Ask about facts from turn 3 (compression ratio + Markov sufficiency)
-    using only the compressed context. The scaffold summary should contain this info.
+    Ask about the project name and accuracy number from early turns using
+    only the compressed context. The scaffold summary should contain this info.
     """
     msgs = make_messages(20)
     compressed = compress(msgs)
 
-    # The scaffold summary should contain key facts from turn 3:
-    # "2.5x compression ratio" and "Markov sufficiency"
+    # The scaffold summary should contain key facts from early turns:
+    # the project name and the grouping-accuracy figure.
     scaffold_content = ""
     for m in compressed:
         if m["role"] == "system" and "SCAFFOLD STATE" in m.get("content", ""):
@@ -152,9 +152,8 @@ def test_state_preservation():
 
     # Check for key facts from early turns
     checks = {
-        "company name (Roli/Hermes)": any(w in scaffold_content.lower() for w in ["roli", "hermes"]),
-        "LPCI or TE≈0 or transfer entropy": any(w in scaffold_content.lower() for w in ["lpci", "te≈0", "te=0", "transfer entropy", "te ≈ 0", "te approximately"]),
-        "compression ratio (2.5x)": any(w in scaffold_content.lower() for w in ["2.5x", "2.5", "compression"]),
+        "project name (Dana/NoteFlow)": any(w in scaffold_content.lower() for w in ["dana", "noteflow"]),
+        "grouping accuracy (78%)": any(w in scaffold_content.lower() for w in ["78%", "78", "accuracy"]),
     }
 
     print("  State preservation checks:")

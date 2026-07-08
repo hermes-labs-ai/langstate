@@ -22,25 +22,25 @@ def test_explicit_facts_all_survive():
 
 
 def test_dropped_fact_flags_not_ok():
-    before = [{"role": "user", "content": "the seed round is $2M and TE is zero"}]
-    after = [{"role": "system", "content": "the seed round is $2M"}]
-    r = validate(before, after, facts=["$2M", "TE"])
+    before = [{"role": "user", "content": "the launch budget is $2,000 and status is pending"}]
+    after = [{"role": "system", "content": "the launch budget is $2,000"}]
+    r = validate(before, after, facts=["$2,000", "pending"])
     assert not r.ok and bool(r) is False
-    assert "TE" in r.dropped
-    assert "$2M" in r.survived
+    assert "pending" in r.dropped
+    assert "$2,000" in r.survived
     assert 0.0 < r.survival_rate < 1.0
 
 
 def test_auto_extract_finds_salient_tokens():
-    facts = extract_facts("Roli runs Hermes Labs; LPCI gives 2.5x at 90.1% with $2M seed.")
+    facts = extract_facts("Dana runs Kite Labs; the CLI gives 2.5x at 90.1% with a $2,000 budget.")
     joined = " ".join(facts).lower()
-    for needle in ["roli", "hermes labs", "lpci", "2.5x", "90.1%", "$2m"]:
+    for needle in ["dana", "kite labs", "2.5x", "90.1%", "$2,000"]:
         assert needle in joined, f"{needle} not extracted from {facts}"
 
 
 def test_auto_extract_is_default_path():
-    before = [{"role": "user", "content": "corpus is 530MB with 155 papers"}]
-    after = [{"role": "system", "content": "corpus is 530MB with 155 papers"}]
+    before = [{"role": "user", "content": "dataset is 12MB with 40 files"}]
+    after = [{"role": "system", "content": "dataset is 12MB with 40 files"}]
     r = validate(before, after)  # no explicit facts -> auto extract
     assert r.total > 0
     assert r.ok  # everything present verbatim in after
@@ -59,11 +59,11 @@ def test_empty_before_and_after():
 
 
 def test_summary_reports_counts_and_drops():
-    before = [{"role": "user", "content": "$2M seed, TE zero"}]
-    after = [{"role": "system", "content": "$2M seed"}]
-    r = validate(before, after, facts=["$2M", "TE"])
+    before = [{"role": "user", "content": "$2,000 budget, status pending"}]
+    after = [{"role": "system", "content": "$2,000 budget"}]
+    r = validate(before, after, facts=["$2,000", "pending"])
     s = r.summary()
-    assert "1/2" in s and "DROPPED" in s and "TE" in s
+    assert "1/2" in s and "DROPPED" in s and "pending" in s
 
 
 def test_receipt_as_dict_roundtrips_fields():

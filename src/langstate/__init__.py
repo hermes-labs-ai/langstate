@@ -3,5 +3,5 @@
 from langstate.compress import compress
 from langstate.validate import Receipt, extract_facts, validate
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __all__ = ["compress", "validate", "Receipt", "extract_facts", "__version__"]
