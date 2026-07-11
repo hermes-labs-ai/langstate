@@ -1,5 +1,10 @@
 # langstate — PUBLISH RUNBOOK
 
+> **SUPERSEDED — DO NOT EXECUTE.** This file predates discovery of the public
+> 0.1.0 leak and still instructs uploading `0.1.0`. Canonical containment plan:
+> `~/ai-infra/_workspace/canon-genesis-20260710/LANGSTATE-YANK-RUNBOOK.md` plus
+> its mandatory independent review `CODEX-YANK-REVIEW.md`.
+
 _Staged 2026-07-04 (overnight). Everything below the "Two commands" line is pre-flighted and green.
 Publishing is a two-command act. Nothing here has been published._
 

@@ -1,5 +1,3 @@
-> **SUPERSEDED 2026-07-10 — DO NOT EXECUTE.** The publish-0.1.1 + yank sequence below is WRONG. Correct action: DELETE release 0.1.0 then publish 0.8.0. See ~/ai-infra/_workspace/canon-genesis-20260710/LANGSTATE-YANK-RUNBOOK.md.
-
 # langstate 0.1.1 — SCRUB STAGED, verified clean, NOT published
 
 > **SUPERSEDED AS AN EXECUTION RUNBOOK.** Historical scrub evidence below is
