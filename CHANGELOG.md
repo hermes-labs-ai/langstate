@@ -1,27 +1,39 @@
 # Changelog
 
-## v0.1.1
+## [0.8.0] - 2026-07-17
 
-Supersedes v0.1.0 on PyPI. Packaging and documentation correction — no API change.
+Supersedes 0.1.0 on PyPI. Internal iterations happened between public
+releases; this release adopts the highest coherent number rather than
+re-issuing intermediate ones (an internal 0.1.1 was prepared but never
+published — its notes are folded in here).
 
-- Removed the internal `te_check.py` benchmark helper from the shipped package
-  (it was never part of the public API and carried project-specific test
-  fixtures). The compression and receipt code is unchanged.
-- Documentation no longer references a transfer-entropy figure; the README and
-  `llms.txt` now describe the LPCI approach in plain terms.
-- Generic example values in the `validate` docstring.
+### Added
+- `validate(before, after)` — deterministic, zero-dependency receipt proving
+  which facts survived compression (`Receipt.ok`, `.survival_rate`,
+  `.summary()`). Runs in CI, no model call.
+- Pluggable summarizer adapters: `local` (qwen3:4b via Ollama, default,
+  zero-cost), `openai` (gpt-4o-mini), `anthropic` (claude-haiku-4-5), or any
+  callable.
+- src/ layout and CI test workflow (pytest, Python 3.10-3.12).
 
-## v0.1.0
+### Changed
+- Default compression model unified to `qwen3:4b` across compress and
+  adapters.
+- Documentation describes the LPCI approach in plain terms; earlier
+  benchmark framing that did not meet our evidence bar was removed.
 
-First public release. `compress(messages)` plus a facts-survived receipt.
+### Removed
+- The internal `te_check.py` benchmark helper is no longer part of the
+  shipped package (it was never public API and carried project-specific test
+  fixtures). Packaging now prunes `tests/`, `bench/`, and internal
+  workspaces from the sdist.
+
+## [0.1.0] - 2026-04-26
+
+First public release. `compress(messages)`.
 
 - Scaffold-aware context compression for OpenAI-format messages
 - Preserves system prompts and recent turns verbatim; compresses older history
   into a `[SCAFFOLD STATE]` summary
 - 51-54% token reduction on typical conversations
-- `validate(before, after)` — deterministic, zero-dependency receipt proving
-  which facts survived compression (`Receipt.ok`, `.survival_rate`, `.summary()`)
-- Pluggable summarizers: `local` (qwen3:4b via Ollama, default, zero-cost),
-  `openai` (gpt-4o-mini), `anthropic` (claude-haiku-4-5), or any callable
-- Default compression model unified to `qwen3:4b` across the library
 - Apache-2.0, zero runtime dependencies (stdlib only)
