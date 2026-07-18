@@ -10,7 +10,7 @@ adapters raise ``AdapterUnavailable`` when their key or backend is missing
 so callers can gracefully degrade to the local adapter.
 
 Production targets (one cheap default per provider, per the Hermes spec):
-    - Anthropic: claude-haiku-4-5          (env ANTHROPIC_API_KEY)
+    - Anthropic: claude-haiku-4-5-20251001 (env ANTHROPIC_API_KEY)
     - OpenAI:    gpt-4o-mini               (env OPENAI_API_KEY)
     - Local:     qwen3:4b via Ollama       (no key, localhost:11434) — the default
 """
@@ -36,7 +36,7 @@ class AdapterUnavailable(RuntimeError):
 # ---------------------------------------------------------------------------
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
-DEFAULT_LOCAL_MODEL = "qwen3:4b"  # small, fast, zero-cost; the library-wide default
+DEFAULT_LOCAL_MODEL = "qwen3:4b"  # local default; no provider API key required
 
 
 def ollama(
@@ -190,7 +190,7 @@ def anthropic(
 REGISTRY = {
     "local":     ("qwen3:4b (Ollama)",           ollama),
     "openai":    ("gpt-4o-mini",                 openai),
-    "anthropic": ("claude-haiku-4-5",            anthropic),
+    "anthropic": (DEFAULT_ANTHROPIC_MODEL,         anthropic),
 }
 
 

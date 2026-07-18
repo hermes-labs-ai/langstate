@@ -1,9 +1,9 @@
 """
 langstate.validate — the facts-survived receipt.
 
-``compress`` shrinks a conversation; ``validate`` proves what survived. It has
-zero dependencies, makes no model call, and is fully deterministic — so it runs
-in CI and gives you a hard receipt you can log next to every compression.
+``compress`` shrinks a conversation; ``validate`` records whether selected
+literal strings occur in the output. It has zero dependencies, makes no model
+call, and is fully deterministic, so it can run in CI.
 
     from langstate import compress, validate
 
@@ -18,12 +18,10 @@ in CI and gives you a hard receipt you can log next to every compression.
     for fact in receipt.dropped:
         print("LOST:", fact)
 
-What "survived" means here is deliberately conservative: a fact survives if its
-normalized text is still present *verbatim* in the compressed messages (the
-scaffold summary plus the preserved recent turns). This is a LEXICAL check, not
-a semantic one — it cannot credit a fact that survived only in paraphrase, so it
-under-counts rather than over-claims. That direction is the honest one for a
-receipt: a green receipt means the literal facts are demonstrably there.
+"Survived" means only that a selected string's normalized text occurs in the
+compressed messages. This lexical check cannot credit a paraphrase and cannot
+detect changed attribution, negation, or meaning when the same tokens remain.
+A green receipt is therefore not semantic-equivalence proof.
 """
 
 from __future__ import annotations
@@ -36,7 +34,7 @@ _WS = re.compile(r"\s+")
 # Salient-fact patterns. Deliberately conservative: money, ratios, percentages,
 # multi-digit numbers, acronyms, and proper nouns — the token classes that carry
 # decisions, quantities, and named entities.
-_MONEY = re.compile(r"\$\s?\d[\d,]*(?:\.\d+)?\s?[kKmMbB]?")
+_MONEY = re.compile(r"\$\s?\d[\d,]*(?:\.\d+)?(?:\s?[kKmMbB]\b)?")
 _RATIO = re.compile(r"\b\d+(?:\.\d+)?x\b")
 _PERCENT = re.compile(r"\b\d+(?:\.\d+)?\s?%")
 _NUMBER = re.compile(r"\b\d[\d,]*\.\d+\b|\b\d{2,}\b")
@@ -87,9 +85,13 @@ def extract_facts(text: str) -> list[str]:
         seen.add(key)
         facts.append(tok)
 
+    covered: list[tuple[int, int]] = []
     for pat in (_MONEY, _RATIO, _PERCENT, _NUMBER, _ACRONYM):
         for m in pat.finditer(text):
+            if any(m.start() >= start and m.end() <= end for start, end in covered):
+                continue
             add(m.group(0))
+            covered.append(m.span())
     for m in _PROPER.finditer(text):
         tok = m.group(0)
         if " " not in tok and _norm(tok) in _PROPER_STOP:
@@ -164,8 +166,8 @@ def validate(
 
     Returns:
         A :class:`Receipt`. A fact "survived" if its normalized text is a
-        substring of the concatenated, normalized ``after`` content — a lexical,
-        conservative check that under-counts rather than over-claims.
+        substring of the concatenated, normalized ``after`` content. This is a
+        lexical presence check, not a semantic-equivalence check.
     """
     if facts is None:
         facts = extract_facts(_messages_text(before))

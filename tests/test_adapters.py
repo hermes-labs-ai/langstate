@@ -10,7 +10,13 @@ benches live in bench_adapters.py.
 
 import os
 
-from langstate.adapters import AdapterUnavailable, REGISTRY, build, probe
+from langstate.adapters import (
+    DEFAULT_ANTHROPIC_MODEL,
+    AdapterUnavailable,
+    REGISTRY,
+    build,
+    probe,
+)
 from langstate.compress import _count_messages_tokens, compress
 
 
@@ -27,7 +33,7 @@ def test_registry_has_three_production_adapters():
     labels = {name: REGISTRY[name][0] for name in REGISTRY}
     assert "qwen3:4b" in labels["local"]
     assert "gpt-4o-mini" in labels["openai"]
-    assert "claude-haiku-4-5" in labels["anthropic"]
+    assert labels["anthropic"] == DEFAULT_ANTHROPIC_MODEL
 
 
 def test_build_openai_without_key_raises_adapter_unavailable():

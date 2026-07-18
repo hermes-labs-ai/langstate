@@ -1,8 +1,8 @@
 # langstate
 
-Scaffold-aware context compression for OpenAI-format messages. `compress(messages)` preserves all conversational state — facts, decisions, task status, user preferences — while reducing tokens by 50-54%.
+`langstate` compresses older OpenAI-format conversation messages into a scaffold summary while preserving system messages and a configurable number of recent turns verbatim. Retention and size reduction depend on the conversation and summarizer.
 
-Built on the LPCI approach: stateless models hold working state through the language scaffold in their context. langstate productizes that idea — it compresses older history into a state-preserving `[SCAFFOLD STATE]` summary and ships a receipt proving which facts survived.
+`validate()` can record whether selected literal strings appear in the compressed output. It is deterministic and makes no model call, but it is a lexical check rather than a semantic-equivalence test.
 
 ## What it does
 
@@ -10,7 +10,7 @@ Built on the LPCI approach: stateless models hold working state through the lang
 from langstate import compress
 
 compressed = compress(messages)
-# Drop-in replacement: same OpenAI format, fewer tokens, state preserved
+# Same OpenAI message shape; inspect retention before using the result
 response = client.chat.completions.create(messages=compressed, model="gpt-4o")
 ```
 
@@ -19,10 +19,9 @@ The output is a valid OpenAI-format messages list:
 - Last 4 turn-pairs kept verbatim
 - Older turns compressed into a `[SCAFFOLD STATE]` system message via local or cloud model
 
-## Prove the state survived — the receipt
+## Check selected literals — the receipt
 
-Compression that silently drops a fact is worse than no compression. `validate`
-returns a receipt — deterministic, no model call, runs in CI:
+`validate` returns a deterministic lexical receipt and makes no model call:
 
 ```python
 from langstate import compress, validate
@@ -33,24 +32,24 @@ compressed = compress(messages)
 receipt = validate(messages, compressed,
                    facts=["$4,000 budget", "launch May 5", "Dana"])
 
-print(receipt.summary())   # "3/3 facts survived (100%) · 52% smaller"
-print(receipt.dropped)     # [] — nothing lost
-assert receipt.ok          # gate your pipeline on it
+print(receipt.summary())   # counts literal strings found and approximate size change
+print(receipt.dropped)     # selected strings not found in the output
+assert receipt.ok          # optional gate on exact lexical retention
 
-# Or let it auto-extract salient facts (numbers, money, acronyms, names):
+# Or heuristically select tokens (numbers, money, acronyms, names):
 receipt = validate(messages, compressed)
 ```
 
-The check is intentionally *lexical* — a fact counts as survived only if it is
-present verbatim in the compressed messages. That under-counts (it can't credit
-a paraphrase) rather than over-claims — the honest direction for a receipt.
-`receipt.as_dict()` gives a JSON-friendly record to log.
+A green receipt means only that the selected normalized strings occur in the
+output. It does not verify meaning, attribution, negation, completeness, or
+semantic equivalence. Auto-extraction is heuristic; pass an explicit `facts=`
+list for controlled checks. `receipt.as_dict()` gives a JSON-friendly record to
+log.
 
 ## Install
 
 ```bash
-# From GitHub (PyPI coming soon):
-pip install git+https://github.com/hermes-labs-ai/langstate.git
+python -m pip install 'langstate==0.2.0'
 ```
 
 Requirements: Python 3.10+, no heavy dependencies (stdlib only). For local summarization, run [Ollama](https://ollama.ai) locally:
@@ -65,15 +64,15 @@ langstate ships three built-in summarizer backends:
 
 | Adapter | Model | Cost | Key |
 |---|---|---|---|
-| `local` (default) | qwen3:4b via Ollama | zero | none |
+| `local` (default) | qwen3:4b via Ollama | local compute | none |
 | `openai` | gpt-4o-mini | API | `OPENAI_API_KEY` |
-| `anthropic` | claude-haiku-4-5 | API | `ANTHROPIC_API_KEY` |
+| `anthropic` | claude-haiku-4-5-20251001 | API | `ANTHROPIC_API_KEY` |
 
 ```python
 from langstate import compress
 from langstate.adapters import build
 
-# Local Ollama (default, zero cost)
+# Local Ollama (default, no API key; uses local compute)
 compressed = compress(messages)
 
 # OpenAI
@@ -100,30 +99,31 @@ compress(
 
 ## Choosing a model
 
-**The default is local `qwen3:4b` via Ollama** — chosen deliberately: no API key,
-zero cost, and quick to pull. It compresses hard and fast; on smaller models a
-fact or two can slip, which is exactly what `validate` is for — measure it,
-don't assume it.
+**The default is local `qwen3:4b` via Ollama.** It requires a model download and
+local compute but no API key. Compression quality depends on the model and data;
+use explicit lexical checks plus an evaluation appropriate to the consequences
+of semantic errors.
 
 Pick by what you're optimizing:
 
 | Want | Use | Trade-off |
 |---|---|---|
-| Zero cost, no key, offline | `local` — qwen3:4b (default) | fastest setup; verify fidelity with `validate` |
-| Highest fidelity, cheap | `openai` — gpt-4o-mini | a few cents; kept every planted fact in our bench |
-| Anthropic stack | `anthropic` — claude-haiku-4-5 | cheap tier; needs `ANTHROPIC_API_KEY` |
+| No provider key | `local` — qwen3:4b (default) | requires Ollama, a model download, and local compute |
+| OpenAI stack | `openai` — gpt-4o-mini | requires `OPENAI_API_KEY`; evaluate on your data |
+| Anthropic stack | `anthropic` — claude-haiku-4-5-20251001 | requires `ANTHROPIC_API_KEY`; evaluate on your data |
 | Full control | your own `summarizer=` | any `(prompt: str) -> str` callable |
 
 Switching is one argument:
 
 ```python
 compress(messages)                              # local qwen3:4b (default)
-compress(messages, model="qwen3:14b")           # bigger local model, slower, higher fidelity
-compress(messages, summarizer=build("openai"))  # cloud, highest fidelity
+compress(messages, model="qwen3:14b")           # alternate local model; evaluate on your data
+compress(messages, summarizer=build("openai"))  # optional provider adapter
 ```
 
-If fidelity matters more than cost, run `validate` on a sample of your traffic
-and move up a tier until the receipt is green.
+No bundled result establishes a universal quality ranking. Evaluate summarizers
+on representative traffic, and pass `model=` explicitly when behavior stability
+matters.
 
 ## Adapter probe
 
@@ -156,10 +156,10 @@ The audit work is paid; the code is not.
 |---|---|---|
 | Static audit | [lintlang](https://github.com/hermes-labs-ai/lintlang) | Agent-config static lint (HERM + H1-H7) |
 | Static audit | [rule-audit](https://github.com/hermes-labs-ai/rule-audit) | Rule-logic audit: contradictions + gaps |
-| Static audit | [scaffold-lint](https://github.com/hermes-labs-ai/scaffold-lint) | Scaffold budget + technique stacking |
+| Static audit | scaffold-lint | Scaffold budget + technique stacking |
 | Static audit | [intent-verify](https://github.com/hermes-labs-ai/intent-verify) | Spec-drift checks |
 | Runtime observability | [little-canary](https://github.com/hermes-labs-ai/little-canary) | Prompt injection detection |
-| Runtime observability | [suy-sideguy](https://github.com/hermes-labs-ai/suy-sideguy) | Runtime policy guard |
+| Runtime observability | [agent-warden](https://github.com/hermes-labs-ai/agent-warden) | Runtime policy guard |
 | Runtime observability | [colony-probe](https://github.com/hermes-labs-ai/colony-probe) | Prompt confidentiality audit |
 | Regression & scoring | [hermes-jailbench](https://github.com/hermes-labs-ai/hermes-jailbench) | Jailbreak regression benchmark |
 | Regression & scoring | [agent-convergence-scorer](https://github.com/hermes-labs-ai/agent-convergence-scorer) | N-agent output consistency |
@@ -169,7 +169,7 @@ The audit work is paid; the code is not.
 | Supporting infra | [agent-gorgon](https://github.com/hermes-labs-ai/agent-gorgon) | Tool-fabrication defense for Claude Code |
 | Supporting infra | [zer0dex](https://github.com/hermes-labs-ai/zer0dex) | Dual-layer agent memory |
 | Supporting infra | [forgetted](https://github.com/hermes-labs-ai/forgetted) | Mid-conversation incognito |
-| Dev tools | [repo-audit](https://github.com/hermes-labs-ai/repo-audit) | Launch-readiness auditor |
+| Dev tools | repo-audit | Launch-readiness auditor |
 | Dev tools | [quick-gate-python](https://github.com/hermes-labs-ai/quick-gate-python) | Python quality gate |
 | Dev tools | [quick-gate-js](https://github.com/hermes-labs-ai/quick-gate-js) | JS/TS quality gate |
 | Dev tools | [csv-quality-gate](https://github.com/hermes-labs-ai/csv-quality-gate) | CSV preflight validation |

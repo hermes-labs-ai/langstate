@@ -38,6 +38,18 @@ def test_auto_extract_finds_salient_tokens():
         assert needle in joined, f"{needle} not extracted from {facts}"
 
 
+def test_auto_extract_does_not_consume_money_suffix_or_duplicate_digits():
+    facts = extract_facts("Dana controls a $4,000 budget.")
+    assert facts == ["$4,000", "Dana"]
+
+
+def test_lexical_receipt_does_not_claim_semantic_attribution():
+    before = [{"role": "user", "content": "Dana controls a $4,000 budget."}]
+    after = [{"role": "system", "content": "Dana controls no budget. Pat controls the $4,000 budget."}]
+    receipt = validate(before, after, facts=["Dana", "$4,000"])
+    assert receipt.ok  # token presence only; callers must not treat this as semantic proof
+
+
 def test_auto_extract_is_default_path():
     before = [{"role": "user", "content": "dataset is 12MB with 40 files"}]
     after = [{"role": "system", "content": "dataset is 12MB with 40 files"}]
