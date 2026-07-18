@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.8.0] - 2026-07-17
+## [0.2.0] - 2026-07-17
 
 Supersedes 0.1.0 on PyPI. Internal iterations happened between public
 releases; this release adopts the highest coherent number rather than
