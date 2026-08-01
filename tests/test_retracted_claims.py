@@ -5,11 +5,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SURFACES = (
-    ROOT / "README.md",
-    ROOT / "llms.txt",
-    ROOT / "AGENTS.md",
-    ROOT / "TODO.md",
-    ROOT / "SCRUB-0.1.1-READY.md",
+    *sorted(ROOT.glob("*.md*")),
+    *sorted(ROOT.glob("*.txt")),
     ROOT / "te_check.py",
     ROOT / "bench" / "te_check.py",
 )
