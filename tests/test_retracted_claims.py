@@ -4,27 +4,14 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TEXT_PATTERNS = (
-    "*.md*",
-    "*.txt",
-    "*.py",
-    "*.json",
-    "*.toml",
-    "*.cfg",
-    "*.ini",
-    "*.sh",
-    "*.yml",
-    "*.yaml",
-)
 SKIP_PARTS = {".git", ".venv", "build", "dist", "__pycache__"}
 SURFACES = tuple(
     sorted(
-        {
-            path
-            for pattern in TEXT_PATTERNS
-            for path in ROOT.rglob(pattern)
-            if not SKIP_PARTS.intersection(path.parts) and path != Path(__file__)
-        }
+        path
+        for path in ROOT.rglob("*")
+        if path.is_file()
+        and not SKIP_PARTS.intersection(path.parts)
+        and path != Path(__file__)
     )
 )
 RETIRED_PATTERNS = (
@@ -41,7 +28,10 @@ RETIRED_PATTERNS = (
 
 def test_retracted_claims_are_absent_from_public_truth_surfaces():
     for path in SURFACES:
-        text = path.read_text()
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
         for pattern in RETIRED_PATTERNS:
             assert pattern.search(text) is None, (path, pattern.pattern)
 
