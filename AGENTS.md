@@ -1,9 +1,8 @@
 # AGENTS.md — langstate
 
 `langstate` is a scaffold-aware context compression library for OpenAI-format
-messages. Single public function: `compress(messages) -> messages`. Backed by
-the LPCI thesis: stateless LLMs hold state via language scaffold, TE approximately
-zero (Markov property).
+messages. Its public API compresses messages and emits a lexical receipt for
+facts the caller explicitly chooses to preserve.
 
 ## Use it for
 
@@ -24,8 +23,8 @@ src/langstate/          Package source
   __init__.py           Re-exports compress
   compress.py           Single public function: compress()
   adapters.py           Ollama / OpenAI / Anthropic summarizer backends
-  te_check.py           Transfer-entropy proxy benchmark (research utility)
-tests/                  Pytest suite (13 tests)
+  validate.py           Lexical facts-survived receipt
+tests/                  Pytest suite
   test_compress.py      Format, compression ratio, state preservation
   test_adapters.py      Adapter protocol + registry + network-free integration
 ```
@@ -61,7 +60,8 @@ Three production adapters in `src/langstate/adapters.py`:
 
 Any callable `(prompt: str) -> str` works as a custom summarizer.
 
-## Relationship to research
+## Evidence boundary
 
-- `langquant` (roli-lpci/langquant) — the LPCI proof, TE≈0, Markov sufficiency
-- `langquant-sdk` (private) — TS prototypes: scaffold-monad, driftwatch, computetrace
+An earlier research proxy and its derived claim were retracted. They are not a
+product guarantee, benchmark, or rationale for using langstate. Judge this
+package by its executable compression behavior and explicit lexical receipts.
