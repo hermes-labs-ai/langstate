@@ -13,9 +13,10 @@ SURFACES = (
 )
 RETIRED_PATTERNS = (
     re.compile(r"\bTE\s*(?:approximately|[≈~=])\s*0", re.IGNORECASE),
+    re.compile(r"transfer[- ]entropy.{0,80}(?:approximately|[≈~=]|near(?:ly)?)\s*0", re.IGNORECASE | re.DOTALL),
     re.compile(r"Markov[- ]sufficien", re.IGNORECASE),
-    re.compile(r"0\.846.{0,80}\bn\s*=\s*74\b", re.IGNORECASE | re.DOTALL),
-    re.compile(r"\bn\s*=\s*74\b.{0,80}0\.846", re.IGNORECASE | re.DOTALL),
+    re.compile(r"(?:0\.846|84\.6\s*%).{0,80}\bn\s*=\s*74\b", re.IGNORECASE | re.DOTALL),
+    re.compile(r"\bn\s*=\s*74\b.{0,80}(?:0\.846|84\.6\s*%)", re.IGNORECASE | re.DOTALL),
 )
 
 
