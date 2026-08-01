@@ -4,14 +4,28 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SURFACES = (
-    *sorted(ROOT.glob("*.md*")),
-    *sorted(ROOT.glob("*.txt")),
-    *sorted((ROOT / "src" / "langstate").glob("*.py")),
-    ROOT / "pyproject.toml",
-    ROOT / "MANIFEST.in",
-    ROOT / "te_check.py",
-    ROOT / "bench" / "te_check.py",
+TEXT_PATTERNS = (
+    "*.md*",
+    "*.txt",
+    "*.py",
+    "*.json",
+    "*.toml",
+    "*.cfg",
+    "*.ini",
+    "*.sh",
+    "*.yml",
+    "*.yaml",
+)
+SKIP_PARTS = {".git", ".venv", "build", "dist", "__pycache__"}
+SURFACES = tuple(
+    sorted(
+        {
+            path
+            for pattern in TEXT_PATTERNS
+            for path in ROOT.rglob(pattern)
+            if not SKIP_PARTS.intersection(path.parts) and path != Path(__file__)
+        }
+    )
 )
 RETIRED_PATTERNS = (
     re.compile(r"\bTE\b.{0,48}\b(?:zero|0(?:\.0+)?)\b", re.IGNORECASE | re.DOTALL),
