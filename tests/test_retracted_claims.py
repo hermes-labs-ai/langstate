@@ -7,6 +7,10 @@ ROOT = Path(__file__).resolve().parents[1]
 SURFACES = (
     *sorted(ROOT.glob("*.md*")),
     *sorted(ROOT.glob("*.txt")),
+    *sorted((ROOT / "src" / "langstate").glob("*.py")),
+    ROOT / "src" / "langstate.egg-info" / "PKG-INFO",
+    ROOT / "pyproject.toml",
+    ROOT / "MANIFEST.in",
     ROOT / "te_check.py",
     ROOT / "bench" / "te_check.py",
 )
