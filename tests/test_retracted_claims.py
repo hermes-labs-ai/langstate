@@ -8,6 +8,8 @@ SURFACES = (
     ROOT / "README.md",
     ROOT / "llms.txt",
     ROOT / "AGENTS.md",
+    ROOT / "TODO.md",
+    ROOT / "SCRUB-0.1.1-READY.md",
     ROOT / "te_check.py",
     ROOT / "bench" / "te_check.py",
 )
