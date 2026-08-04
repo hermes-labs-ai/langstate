@@ -3,10 +3,15 @@
 ## [0.2.1] - 2026-08-04
 
 ### Changed
-- Align package metadata and public documentation with the experimental,
-  inspectable-scaffold scope of the library.
-- Remove unsupported completeness, semantic-preservation, and benchmark claims
-  from public-facing package materials.
+- Present LangState as an experimental, inspectable context-compression library:
+  older history becomes visible scaffold state rather than opaque “memory.”
+- Add a reproducible first-use walkthrough with the emitted scaffold and lexical
+  fact-survival receipt.
+- Describe conversation expansion as “larger” instead of reporting a negative
+  “smaller” percentage.
+- Remove unsupported completeness, semantic-preservation, benchmark, and
+  production-readiness claims from public-facing package materials.
+- Add tag-checked PyPI Trusted Publishing for the `0.2.1` release.
 
 ## [0.2.0] - 2026-07-17
 

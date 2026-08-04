@@ -1,17 +1,17 @@
 # langstate
 
-**Turn older chat history into an explicit, inspectable scaffold — then check the
-literal facts your application cannot afford to lose.**
+**Compress long LLM conversations into visible working state — then check that
+the literal facts you care about survived.**
 
 `langstate` is a small experimental Python library for OpenAI-format message
-lists. It keeps system messages and a recent conversation suffix verbatim,
-summarizes older messages into a visible `[SCAFFOLD STATE]` system message, and
-returns the same list-shaped interface that chat clients already accept.
+lists. It keeps system messages and recent turns verbatim, summarizes older
+history into a visible `[SCAFFOLD STATE]` system message, and returns the same
+list-shaped interface that chat clients already accept.
 
-Its distinctive move is not to call a summary “memory.” It makes the compressed
-working state an ordinary message you can inspect, log, replace, or reject.
-`validate(...)` then gives a deterministic lexical receipt for the facts you
-name explicitly.
+Most context compression gives you a summary and asks you to trust it.
+LangState makes that lossy step inspectable: the compressed state is an ordinary
+message you can view, log, edit, replace, or reject. `validate(...)` then gives
+you a deterministic receipt for the literal facts you name explicitly.
 
 This is a functional prototype/library, not a lossless archive, a structured
 state store, or production infrastructure. Summary quality depends on the
@@ -20,22 +20,9 @@ semantic fidelity.
 
 ## Install
 
-For the currently released PyPI package:
-
 ```bash
 python -m pip install langstate
 ```
-
-To exercise the current repository source directly, install a checkout instead:
-
-```bash
-python -m pip install .
-```
-
-PyPI `0.2.0` is installable, but its published project metadata predates the
-current repository framing. Because PyPI releases are immutable, a later
-new-version release is required before the project page reflects this README
-and metadata.
 
 Python 3.10+; no runtime dependencies beyond the standard library. The default
 summarizer calls a local [Ollama](https://ollama.ai) model, so prepare it once:
@@ -44,45 +31,80 @@ summarizer calls a local [Ollama](https://ollama.ai) model, so prepare it once:
 ollama pull qwen3:4b
 ```
 
-## First useful result
+## Try it in two minutes
 
-This six-turn deterministic example produces a scaffold and receipt without
-requiring a model. The system prompt and the last two user/assistant pairs remain
-verbatim because it sets `preserve_recent=2`.
+This deterministic example produces a real scaffold and receipt without a model
+call. It injects a tiny summarizer so the result is reproducible; remove
+`summarizer=demo_summary` afterward to use local Ollama instead.
 
 ```python
 from langstate import compress, validate
 
 messages = [{"role": "system", "content": "Be concise."}]
 for user, assistant in [
-    ("Budget is $4,000.", "Noted."),
-    ("Launch is May 5.", "Noted."),
-    ("Dana owns the release.", "Noted."),
-    ("Any risks?", "Check the budget and date."),
-    ("What should ship?", "The API client."),
-    ("Anything else?", "No."),
+    (
+        "We are launching the developer preview on May 5. Keep the rollout "
+        "private until the invitation list is approved, and cap the launch "
+        "budget at $4,000.",
+        "Understood. I will treat May 5, a private preview, and the $4,000 "
+        "cap as launch constraints.",
+    ),
+    (
+        "Dana owns the release checklist. Morgan owns the API migration. "
+        "The only blocker is the billing webhook retry bug in staging.",
+        "I recorded Dana as release owner, Morgan as migration owner, and "
+        "the staging billing webhook as the blocker.",
+    ),
+    (
+        "The first cohort is 25 developers using Python clients. We will not "
+        "invite JavaScript users until the second week.",
+        "The first cohort is 25 Python developers; JavaScript waits until week two.",
+    ),
+    (
+        "If the blocker is still open on May 3, move the preview to May 12 "
+        "rather than cutting the verification pass.",
+        "Unresolved on May 3 means move to May 12, never skip verification.",
+    ),
+    ("What should the launch note emphasize?", "The private, Python-first preview."),
+    ("Who gives final approval?", "Dana, after webhook verification passes."),
 ]:
     messages.extend(({"role": "user", "content": user},
                      {"role": "assistant", "content": assistant}))
 
 def demo_summary(_prompt):
-    return "- Budget is $4,000.\n- Launch is May 5.\n- Dana owns the release."
+    return (
+        "- Preview: May 5; budget cap: $4,000.\n"
+        "- Dana owns release; Morgan owns API migration.\n"
+        "- Blocker: staging billing webhook retries.\n"
+        "- If still blocked May 3, move to May 12."
+    )
 
 compressed = compress(messages, preserve_recent=2, summarizer=demo_summary)
 
 receipt = validate(
     messages,
     compressed,
-    facts=["$4,000", "May 5", "Dana"],
+    facts=["May 5", "$4,000", "Dana", "Morgan", "May 12"],
 )
 assert receipt.ok
-print(len(messages), "messages ->", len(compressed), "messages")
+print(compressed[1]["content"])
 print(receipt.summary())
 ```
 
-The observed deterministic result is `13 messages -> 6 messages` with `3/3`
-selected facts surviving. To try a real model, omit `summarizer=demo_summary`
-after preparing Ollama, then judge the returned receipt for your own facts.
+The result makes the compressed state visible before you send it anywhere:
+
+```text
+[SCAFFOLD STATE — compressed from 8 earlier messages]
+- Preview: May 5; budget cap: $4,000.
+- Dana owns release; Morgan owns API migration.
+- Blocker: staging billing webhook retries.
+- If still blocked May 3, move to May 12.
+
+5/5 facts survived (100%) · 62% smaller
+```
+
+Now omit `summarizer=demo_summary` after preparing Ollama to judge a real local
+model against the facts your application actually needs.
 `Receipt.ok` is true only when every requested string occurs in the compressed
 messages after case-and-whitespace normalization. It cannot credit a paraphrase,
 so it is intentionally conservative. Use explicit `facts=[...]` for a focused

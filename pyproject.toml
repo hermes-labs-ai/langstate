@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "langstate"
 version = "0.2.1"
-description = "Inspectable scaffold compression for OpenAI-format chat history with lexical fact receipts"
+description = "Inspectable context compression for LLM conversations, with visible scaffold state and lexical fact receipts"
 readme = "README.md"
 license = "Apache-2.0"
 authors = [{name = "Rolando Bosch", email = "roli@hermes-labs.ai"}]
@@ -23,7 +23,7 @@ keywords = [
     "language-state",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -35,6 +35,8 @@ classifiers = [
 [project.urls]
 Homepage = "https://hermes-labs.ai"
 Repository = "https://github.com/hermes-labs-ai/langstate"
+Documentation = "https://github.com/hermes-labs-ai/langstate#readme"
+Changelog = "https://github.com/hermes-labs-ai/langstate/blob/main/CHANGELOG.md"
 Issues = "https://github.com/hermes-labs-ai/langstate/issues"
 
 [project.optional-dependencies]

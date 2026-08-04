@@ -66,6 +66,18 @@ def test_summary_reports_counts_and_drops():
     assert "1/2" in s and "DROPPED" in s and "pending" in s
 
 
+def test_summary_describes_expansion_without_negative_smaller_wording():
+    r = Receipt(
+        facts_checked=["May 5"],
+        survived=["May 5"],
+        dropped=[],
+        tokens_before=100,
+        tokens_after=114,
+    )
+
+    assert r.summary() == "1/1 facts survived (100%) · 14% larger"
+
+
 def test_receipt_as_dict_roundtrips_fields():
     r = validate(
         [{"role": "user", "content": "x is 42"}],

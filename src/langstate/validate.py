@@ -132,7 +132,8 @@ class Receipt:
     def summary(self) -> str:
         pct = round(self.survival_rate * 100)
         red = round(self.token_reduction * 100)
-        head = f"{len(self.survived)}/{self.total} facts survived ({pct}%) · {red}% smaller"
+        size_change = f"{red}% smaller" if red >= 0 else f"{abs(red)}% larger"
+        head = f"{len(self.survived)}/{self.total} facts survived ({pct}%) · {size_change}"
         if self.dropped:
             head += f" · DROPPED: {', '.join(self.dropped)}"
         return head
