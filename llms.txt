@@ -1,19 +1,21 @@
 # langstate
 
-Scaffold-aware context compression for OpenAI-format messages. Compresses
-conversation history into a state-preserving scaffold summary, keeping the
-system prompt and recent turns verbatim. Achieves 50-54% compression at zero
-or low cost via local Ollama, OpenAI, or Anthropic adapters.
+Context compression for OpenAI-format messages. Summarizes older conversation
+history into a scaffold message while keeping system prompts and recent turns
+verbatim. A deterministic lexical receipt checks whether explicitly selected
+facts remain present after compression.
 
 ## What it is
 
-`compress(messages)` takes an OpenAI-format messages list and returns a shorter
-one that preserves all conversational state:
+`compress(messages)` takes an OpenAI-format messages list and returns one with
+older turns summarized:
 
 - System prompts kept verbatim
 - Last 4 turn-pairs kept verbatim
 - Older turns summarized into a `[SCAFFOLD STATE]` system message
 - Output is valid OpenAI chat format, drop-in for any OpenAI-compatible API
+- `validate(before, after, facts=[...])` reports which selected facts remain
+  lexically present
 
 Built on the LPCI approach: stateless models hold working state through the
 language scaffold in their context.
@@ -57,9 +59,9 @@ for name in REGISTRY:
 
 ## Adapters
 
-- `local` — qwen3:14b via Ollama (no API key, localhost:11434)
+- `local` — qwen3:4b via Ollama (no API key, localhost:11434)
 - `openai` — gpt-4o-mini (env OPENAI_API_KEY)
-- `anthropic` — claude-opus-4-7 (env ANTHROPIC_API_KEY)
+- `anthropic` — claude-haiku-4-5 (env ANTHROPIC_API_KEY)
 
 Any callable `(prompt: str) -> str` works as a custom summarizer.
 

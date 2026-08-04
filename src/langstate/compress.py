@@ -1,9 +1,9 @@
 """
 langstate.compress — Scaffold-aware context compression for OpenAI-format messages.
 
-Compresses conversation history into a state-preserving scaffold summary,
-keeping the system prompt and recent turns verbatim. Uses a local Ollama
-model (qwen3:4b) for zero-cost summarization.
+Summarizes older conversation history into a scaffold message while keeping
+the system prompt and recent turns verbatim. Uses a local Ollama model
+(qwen3:4b) by default.
 
 Usage:
     from langstate.compress import compress
@@ -61,7 +61,7 @@ def compress(
     min_turns_to_compress: int = 6,
     summarizer: Optional[Summarizer] = None,
 ) -> list[dict]:
-    """Compress an OpenAI-format messages array while preserving conversational state.
+    """Summarize older messages while keeping system and recent turns verbatim.
 
     Args:
         messages: List of dicts with "role" and "content" keys.

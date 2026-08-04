@@ -8,8 +8,8 @@ re-issuing intermediate ones (an internal 0.1.1 was prepared but never
 published — its notes are folded in here).
 
 ### Added
-- `validate(before, after)` — deterministic, zero-dependency receipt proving
-  which facts survived compression (`Receipt.ok`, `.survival_rate`,
+- `validate(before, after)` — deterministic, zero-dependency receipt reporting
+  which selected facts remain lexically present (`Receipt.ok`, `.survival_rate`,
   `.summary()`). Runs in CI, no model call.
 - Pluggable summarizer adapters: `local` (qwen3:4b via Ollama, default,
   zero-cost), `openai` (gpt-4o-mini), `anthropic` (claude-haiku-4-5), or any
@@ -35,5 +35,5 @@ First public release. `compress(messages)`.
 - Scaffold-aware context compression for OpenAI-format messages
 - Preserves system prompts and recent turns verbatim; compresses older history
   into a `[SCAFFOLD STATE]` summary
-- 51-54% token reduction on typical conversations
+- Shortens older history while keeping system prompts and recent turns verbatim
 - Apache-2.0, zero runtime dependencies (stdlib only)
