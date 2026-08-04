@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.1] - 2026-08-04
+
+### Changed
+- Align package metadata and public documentation with the experimental,
+  inspectable-scaffold scope of the library.
+- Remove unsupported completeness, semantic-preservation, and benchmark claims
+  from public-facing package materials.
+
 ## [0.2.0] - 2026-07-17
 
 Supersedes 0.1.0 on PyPI. Internal iterations happened between public
