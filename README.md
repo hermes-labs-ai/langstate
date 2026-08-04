@@ -26,16 +26,16 @@ For the currently released PyPI package:
 python -m pip install langstate
 ```
 
-To exercise the code and documentation in a checkout (including this local
-candidate), install that checkout instead:
+To exercise the current repository source directly, install a checkout instead:
 
 ```bash
 python -m pip install .
 ```
 
-This candidate intentionally keeps version `0.2.0`; PyPI already has an
-immutable `0.2.0` artifact with different metadata. A new-version release is
-therefore required before `pip install langstate` can represent this candidate.
+PyPI `0.2.0` is installable, but its published project metadata predates the
+current repository framing. Because PyPI releases are immutable, a later
+new-version release is required before the project page reflects this README
+and metadata.
 
 Python 3.10+; no runtime dependencies beyond the standard library. The default
 summarizer calls a local [Ollama](https://ollama.ai) model, so prepare it once:
