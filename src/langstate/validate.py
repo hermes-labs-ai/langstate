@@ -1,7 +1,7 @@
 """
 langstate.validate — the facts-survived receipt.
 
-``compress`` shrinks a conversation; ``validate`` proves what survived. It has
+``compress`` shrinks a conversation; ``validate`` reports what remains. It has
 zero dependencies, makes no model call, and is fully deterministic — so it runs
 in CI and gives you a hard receipt you can log next to every compression.
 

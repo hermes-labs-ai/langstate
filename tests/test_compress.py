@@ -5,7 +5,7 @@ import urllib.request
 
 import pytest
 
-from langstate.compress import compress, _count_messages_tokens
+from langstate.compress import _build_compression_prompt, compress, _count_messages_tokens
 
 
 def _ollama_reachable() -> bool:
@@ -94,6 +94,11 @@ def test_five_turns():
     result = compress(msgs)
     assert validate_openai_format(result)
     assert len(result) == len(msgs)
+
+
+def test_compression_prompt_does_not_promise_lossless_state():
+    prompt = _build_compression_prompt("[USER]: important detail")
+    assert "Do not claim that the summary is complete or lossless." in prompt
 
 
 @requires_ollama

@@ -5,9 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "langstate"
 version = "0.2.0"
-description = "Scaffold-aware context compression for OpenAI-format messages — preserve state at 50%+ token reduction via local Ollama, OpenAI, or Anthropic"
+description = "Inspectable scaffold compression for OpenAI-format chat history with lexical fact receipts"
 readme = "README.md"
-license = {text = "Apache-2.0"}
+license = "Apache-2.0"
 authors = [{name = "Rolando Bosch", email = "roli@hermes-labs.ai"}]
 maintainers = [{name = "Hermes Labs", email = "info@hermes-labs.ai"}]
 requires-python = ">=3.10"
