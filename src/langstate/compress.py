@@ -67,7 +67,8 @@ def compress(
         preserve_recent: Number of recent user/assistant turn pairs to keep verbatim.
         model: Ollama model to use when no summarizer is given (back-compat).
         ollama_url: Ollama API endpoint (back-compat).
-        min_turns_to_compress: Don't compress if fewer than this many messages.
+        min_turns_to_compress: Don't compress if fewer than this many complete
+            user/assistant turn pairs are present.
         summarizer: Optional ``summarize(prompt) -> str`` callable. If None, falls back
             to a local Ollama adapter (qwen3:4b) for back-compat with the MVP.
 

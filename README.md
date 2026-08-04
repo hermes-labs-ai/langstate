@@ -20,9 +20,22 @@ semantic fidelity.
 
 ## Install
 
+For the currently released PyPI package:
+
 ```bash
 python -m pip install langstate
 ```
+
+To exercise the code and documentation in a checkout (including this local
+candidate), install that checkout instead:
+
+```bash
+python -m pip install .
+```
+
+This candidate intentionally keeps version `0.2.0`; PyPI already has an
+immutable `0.2.0` artifact with different metadata. A new-version release is
+therefore required before `pip install langstate` can represent this candidate.
 
 Python 3.10+; no runtime dependencies beyond the standard library. The default
 summarizer calls a local [Ollama](https://ollama.ai) model, so prepare it once:
@@ -33,32 +46,43 @@ ollama pull qwen3:4b
 
 ## First useful result
 
-Pass the messages you already send to a chat API. Older turns become a scaffold;
-the system prompt and last four user/assistant pairs remain verbatim by default.
+This six-turn deterministic example produces a scaffold and receipt without
+requiring a model. The system prompt and the last two user/assistant pairs remain
+verbatim because it sets `preserve_recent=2`.
 
 ```python
 from langstate import compress, validate
 
-messages = [
-    {"role": "system", "content": "Be concise."},
-    {"role": "user", "content": "The launch budget is $4,000."},
-    {"role": "assistant", "content": "Noted."},
-    # ... enough additional user/assistant turns to exceed the threshold ...
-]
+messages = [{"role": "system", "content": "Be concise."}]
+for user, assistant in [
+    ("Budget is $4,000.", "Noted."),
+    ("Launch is May 5.", "Noted."),
+    ("Dana owns the release.", "Noted."),
+    ("Any risks?", "Check the budget and date."),
+    ("What should ship?", "The API client."),
+    ("Anything else?", "No."),
+]:
+    messages.extend(({"role": "user", "content": user},
+                     {"role": "assistant", "content": assistant}))
 
-compressed = compress(messages)  # local qwen3:4b through Ollama by default
+def demo_summary(_prompt):
+    return "- Budget is $4,000.\n- Launch is May 5.\n- Dana owns the release."
+
+compressed = compress(messages, preserve_recent=2, summarizer=demo_summary)
 
 receipt = validate(
     messages,
     compressed,
-    facts=["$4,000", "launch budget"],
+    facts=["$4,000", "May 5", "Dana"],
 )
+assert receipt.ok
+print(len(messages), "messages ->", len(compressed), "messages")
 print(receipt.summary())
-if not receipt.ok:
-    # Keep the original history, retry with another model, or intervene.
-    print("Check these facts:", receipt.dropped)
 ```
 
+The observed deterministic result is `13 messages -> 6 messages` with `3/3`
+selected facts surviving. To try a real model, omit `summarizer=demo_summary`
+after preparing Ollama, then judge the returned receipt for your own facts.
 `Receipt.ok` is true only when every requested string occurs in the compressed
 messages after case-and-whitespace normalization. It cannot credit a paraphrase,
 so it is intentionally conservative. Use explicit `facts=[...]` for a focused
