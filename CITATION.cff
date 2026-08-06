@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "langstate: compress long LLM conversations into visible, checkable working state"
+abstract: "langstate is a small experimental Python library for OpenAI-format message lists. It keeps system messages and recent turns verbatim, summarizes older history into a visible [SCAFFOLD STATE] system message, and returns the same list-shaped interface that chat clients already accept. A validate function gives a deterministic receipt for the literal facts named explicitly. It is a functional prototype/library, not a lossless archive, a structured state store, or production infrastructure."
+type: software
+authors:
+  - family-names: "Bosch Rodriguez"
+    given-names: "Rolando"
+    orcid: "https://orcid.org/0009-0005-4896-1112"
+    affiliation: "Hermes Labs"
+license: Apache-2.0
+repository-code: "https://github.com/hermes-labs-ai/langstate"
+version: "0.2.1"
+keywords:
+  - "context compression"
+  - "conversation state"
+  - "LLM"
+  - "message summarization"
+  - "validation"
