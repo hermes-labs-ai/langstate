@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+- Classify the repository-root benchmark JSON files as historical leads that
+  are unevaluated for the current release, document their exact provenance and
+  reproducibility gaps, and include that provenance note (but not the benchmark
+  artifacts) in the source distribution.
+
 ## [0.2.1] - 2026-08-04
 
 ### Changed

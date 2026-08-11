@@ -151,7 +151,9 @@ Use `probe(name)` to see whether a configured adapter is currently usable.
   consistency. They do not establish the quality of any live model.
 - Repository benchmark JSON files record single, synthetic-corpus runs for the
   named adapter and model. They are leads for model selection, not general
-  performance claims.
+  performance claims. Their exact historical provenance and current-release
+  exclusion are recorded in
+  [BENCHMARK-PROVENANCE.md](BENCHMARK-PROVENANCE.md).
 - `validate` checks literal text only. It neither establishes semantic
   equivalence nor detects an invented claim that happens to reuse a checked
   phrase.
