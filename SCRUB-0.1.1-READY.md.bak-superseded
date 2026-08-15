@@ -1,9 +1,0 @@
-# Superseded historical scrub note
-
-This tracked file is retained only to preserve the former filename and history.
-Its earlier execution steps, release state, internal examples, research-derived
-claims, and artifact references are obsolete and must not be used.
-
-Current package and release truth lives in `README.md`, `CHANGELOG.md`, and the
-current repository state. No publish, yank, push, or release action is authorized
-by this notice.
