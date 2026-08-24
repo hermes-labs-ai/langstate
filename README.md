@@ -33,8 +33,22 @@ ollama pull qwen3:4b
 
 ## Try it in two minutes
 
+### One-command proof
+
+Run the deterministic, network-free product proof:
+
+```bash
+langstate demo
+```
+
+It prints the compressed messages and a machine-readable receipt showing that
+both named facts survived. No model, API key, or network call is required.
+
+### Reproduce the API flow
+
 This deterministic example produces a real scaffold and receipt without a model
-call. It injects a tiny summarizer so the result is reproducible; remove
+call. This is the expanded API equivalent of the one-command proof above. It
+injects a tiny summarizer so the result is reproducible; remove
 `summarizer=demo_summary` afterward to use local Ollama instead.
 
 ```python
