@@ -36,7 +36,7 @@ classifiers = [
 langstate = "langstate.cli:main"
 
 [project.urls]
-Homepage = "https://hermes-labs.ai"
+Homepage = "https://hermes-labs.ai/langstate"
 Repository = "https://github.com/hermes-labs-ai/langstate"
 Documentation = "https://github.com/hermes-labs-ai/langstate#readme"
 Changelog = "https://github.com/hermes-labs-ai/langstate/blob/main/CHANGELOG.md"
