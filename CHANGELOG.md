@@ -2,7 +2,18 @@
 
 ## Unreleased
 
+## [0.2.2] - 2026-08-24
+
+### Added
+- Add the deterministic, network-free `langstate demo` command so a new user
+  can exercise compression and inspect a lexical fact-survival receipt without
+  configuring a model or API key.
+- Add LintLang SARIF dogfooding for repository agent configuration.
+
 ### Changed
+- Put the pinned deterministic proof first across the README, show-me-first
+  guide, and LLM-facing package summary.
+- Point the package homepage directly to the canonical Langstate product page.
 - Classify the repository-root benchmark JSON files as historical leads that
   are unevaluated for the current release, document their exact provenance and
   reproducibility gaps, and include that provenance note (but not the benchmark

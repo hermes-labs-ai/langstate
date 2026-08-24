@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "langstate"
-version = "0.2.1"
+version = "0.2.2"
 description = "Inspectable context compression for LLM conversations, with visible scaffold state and lexical fact receipts"
 readme = "README.md"
 license = "Apache-2.0"
@@ -36,7 +36,7 @@ classifiers = [
 langstate = "langstate.cli:main"
 
 [project.urls]
-Homepage = "https://hermes-labs.ai"
+Homepage = "https://hermes-labs.ai/langstate"
 Repository = "https://github.com/hermes-labs-ai/langstate"
 Documentation = "https://github.com/hermes-labs-ai/langstate#readme"
 Changelog = "https://github.com/hermes-labs-ai/langstate/blob/main/CHANGELOG.md"
