@@ -32,6 +32,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
+[project.scripts]
+langstate = "langstate.cli:main"
+
 [project.urls]
 Homepage = "https://hermes-labs.ai"
 Repository = "https://github.com/hermes-labs-ai/langstate"
