@@ -26,7 +26,7 @@ langstate demo
 ```
 
 It prints the compressed messages and a machine-readable receipt showing that
-both named facts survived. The proof needs no model, API key, network call, or
+both named facts survived and that the history got smaller. The proof needs no model, API key, network call, or
 Ollama installation.
 
 Python 3.10+; no runtime dependencies beyond the standard library. To use the
