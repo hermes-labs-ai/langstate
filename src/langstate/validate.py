@@ -57,6 +57,17 @@ def _norm(s: str) -> str:
     return _WS.sub(" ", s).strip().lower()
 
 
+def _contains_fact(haystack: str, key: str) -> bool:
+    """True iff normalized ``key`` occurs in ``haystack`` at lexical boundaries.
+
+    Plain substring membership would credit ``42`` against ``142`` or ``API``
+    against ``rapid``. Requiring a non-word (or string-edge) character on both
+    sides of the match blocks those, while leaving punctuation-led facts like
+    ``$4,000`` / ``90.1%`` and multiword facts untouched.
+    """
+    return re.search(r"(?<!\w)" + re.escape(key) + r"(?!\w)", haystack) is not None
+
+
 def _messages_text(messages: list[dict]) -> str:
     return "\n".join(m.get("content", "") or "" for m in messages)
 
@@ -164,9 +175,10 @@ def validate(
             (heuristic — pass an explicit list for a precise receipt).
 
     Returns:
-        A :class:`Receipt`. A fact "survived" if its normalized text is a
-        substring of the concatenated, normalized ``after`` content — a lexical,
-        conservative check that under-counts rather than over-claims.
+        A :class:`Receipt`. A fact "survived" if its normalized text occurs
+        at word boundaries in the concatenated, normalized ``after`` content —
+        a lexical, conservative check that under-counts rather than over-claims
+        (``42`` does not survive inside ``142``, nor ``API`` inside ``rapid``).
     """
     if facts is None:
         facts = extract_facts(_messages_text(before))
@@ -176,7 +188,7 @@ def validate(
     dropped: list[str] = []
     for fact in facts:
         key = _norm(fact)
-        if key and key in after_text:
+        if key and _contains_fact(after_text, key):
             survived.append(fact)
         else:
             dropped.append(fact)

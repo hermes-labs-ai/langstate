@@ -101,3 +101,23 @@ def test_end_to_end_with_fake_summarizer():
     r = validate(msgs, compressed, facts=["$4,000", "May 5"])
     assert r.ok, r.summary()
     assert r.token_reduction > 0
+
+
+def test_embedded_number_substring_does_not_count_as_survived():
+    after = [{"role": "system", "content": "ticket 142 is closed"}]
+    r = validate([], after, facts=["42"])
+    assert not r.ok
+    assert r.dropped == ["42"]
+
+
+def test_embedded_word_substring_does_not_count_as_survived():
+    after = [{"role": "system", "content": "rapid delivery"}]
+    r = validate([], after, facts=["API"])
+    assert not r.ok
+    assert r.dropped == ["API"]
+
+
+def test_boundary_check_keeps_punctuation_and_multiword_facts():
+    after = [{"role": "system", "content": "Budget  $4,000 (90.1%, 2.5x); Owner: Hermes Labs."}]
+    r = validate([], after, facts=["$4,000", "90.1%", "2.5x", "hermes labs"])
+    assert r.ok, r.summary()
