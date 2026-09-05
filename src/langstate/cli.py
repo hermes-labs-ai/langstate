@@ -10,16 +10,42 @@ from . import __version__, compress, validate
 
 
 def _demo_summary(_: str) -> str:
-    return "- Project: Atlas\\n- Budget: $4,000"
+    return "- Project: Atlas (Q4 build-cluster migration)\n- Budget: $4,000 cap, no overrun"
 
 
 def _demo_payload() -> dict[str, object]:
     before = [
         {"role": "system", "content": "Preserve named project facts."},
-        {"role": "user", "content": "The project is Atlas."},
-        {"role": "assistant", "content": "Recorded Project: Atlas."},
-        {"role": "user", "content": "The budget is $4,000."},
-        {"role": "assistant", "content": "Recorded Budget: $4,000."},
+        {
+            "role": "user",
+            "content": (
+                "We are kicking off the Q4 infrastructure work. For tracking, "
+                "the project is called Atlas, and it covers moving every build "
+                "job from the old cluster to the new one before the freeze."
+            ),
+        },
+        {
+            "role": "assistant",
+            "content": (
+                "Recorded Project: Atlas, the Q4 migration of all build jobs "
+                "from the old cluster to the new one ahead of the freeze."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                "Finance signed off yesterday. The budget is $4,000 for the "
+                "whole migration, contractor hours included, and we cannot go "
+                "above that without a fresh approval."
+            ),
+        },
+        {
+            "role": "assistant",
+            "content": (
+                "Recorded Budget: $4,000, all-inclusive, with no overrun "
+                "allowed without a fresh approval."
+            ),
+        },
         {"role": "user", "content": "What remains?"},
         {"role": "assistant", "content": "Review the release packet."},
     ]

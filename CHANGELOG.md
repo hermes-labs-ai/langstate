@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+- `langstate demo` now emits a scaffold with real line breaks instead of a
+  literal `\n` sequence, and its earlier turns are realistic enough that the
+  receipt reports a positive `token_reduction` (about 0.68) rather than `0.0`.
+
 ## [0.2.2] - 2026-08-24
 
 ### Added
