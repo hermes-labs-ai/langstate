@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "langstate"
-version = "0.2.2"
+version = "0.2.3"
 description = "Inspectable context compression for LLM conversations, with visible scaffold state and lexical fact receipts"
 readme = "README.md"
 license = "Apache-2.0"

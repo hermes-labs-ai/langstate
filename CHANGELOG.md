@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.2.3] - 2026-09-05
+
+### Fixed
+- Require lexical word boundaries when validating fact survival, so `42` is
+  not credited inside `142` and `API` is not credited inside `rapid`.
+
 ### Fixed
 - `langstate demo` now emits a scaffold with real line breaks instead of a
   literal `\n` sequence, and its earlier turns are realistic enough that the
