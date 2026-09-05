@@ -18,23 +18,30 @@ state store, or production infrastructure. Summary quality depends on the
 model and the input; treat `validate` as a narrow check, not a guarantee of
 semantic fidelity.
 
-## Install
+## Try it in two minutes
 
 ```bash
-python -m pip install langstate
+python -m pip install langstate==0.2.2
+langstate demo
 ```
 
-Python 3.10+; no runtime dependencies beyond the standard library. The default
-summarizer calls a local [Ollama](https://ollama.ai) model, so prepare it once:
+It prints the compressed messages and a machine-readable receipt showing that
+both named facts survived and that the history got smaller. The proof needs no model, API key, network call, or
+Ollama installation.
+
+Python 3.10+; no runtime dependencies beyond the standard library. To use the
+default summarizer after the proof, prepare a local
+[Ollama](https://ollama.ai) model once:
 
 ```bash
 ollama pull qwen3:4b
 ```
 
-## Try it in two minutes
+## Reproduce the API flow
 
 This deterministic example produces a real scaffold and receipt without a model
-call. It injects a tiny summarizer so the result is reproducible; remove
+call. This is the expanded API equivalent of the one-command proof above. It
+injects a tiny summarizer so the result is reproducible; remove
 `summarizer=demo_summary` afterward to use local Ollama instead.
 
 ```python
@@ -151,7 +158,9 @@ Use `probe(name)` to see whether a configured adapter is currently usable.
   consistency. They do not establish the quality of any live model.
 - Repository benchmark JSON files record single, synthetic-corpus runs for the
   named adapter and model. They are leads for model selection, not general
-  performance claims.
+  performance claims. Their exact historical provenance and current-release
+  exclusion are recorded in
+  [BENCHMARK-PROVENANCE.md](BENCHMARK-PROVENANCE.md).
 - `validate` checks literal text only. It neither establishes semantic
   equivalence nor detects an invented claim that happens to reuse a checked
   phrase.

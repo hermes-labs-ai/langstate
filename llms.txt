@@ -32,13 +32,16 @@ language scaffold in their context.
 - When exact verbatim history is required (prefer full context)
 - Real-time inference paths where the compression latency is unacceptable
 
-## Install
+## Try it
 
 ```
-pip install langstate
+python -m pip install langstate==0.2.2
+langstate demo
 ```
 
-Requires: Python 3.10+. No heavy dependencies (urllib only).
+The deterministic proof needs no model, network call, API key, or Ollama
+installation. Requires Python 3.10+. No runtime dependencies beyond the
+standard library.
 
 ## Key functions
 

@@ -1,6 +1,7 @@
 # Keep the published sdist to the shipping package only.
 # tests/ carries project-specific fixtures that are not part of the public
 # API and must not appear on PyPI. Tests still run from a repo checkout.
+include BENCHMARK-PROVENANCE.md
 prune tests
 prune bench
 prune _workspace
