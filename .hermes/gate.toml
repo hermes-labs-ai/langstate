@@ -5,8 +5,8 @@ fast_budget_seconds = 8.0
 full_required_local = true
 
 [[fast]]
-name = "pytest"
-argv = ["python3", "-m", "pytest", "tests/", "-q"]
+name = "pytest-without-live-ollama"
+argv = ["python3", "-m", "pytest", "tests/", "-q", "-k", "not test_twenty_turns and not test_twenty_five_turns and not test_state_preservation"]
 timeout_seconds = 8.0
 
 [[fast]]
