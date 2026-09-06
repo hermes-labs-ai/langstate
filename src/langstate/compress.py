@@ -96,8 +96,8 @@ def compress(
     if len(conv_msgs) <= preserve_count:
         return list(messages)
 
-    history_msgs = conv_msgs[:-preserve_count]
-    recent_msgs = conv_msgs[-preserve_count:]
+    history_msgs = conv_msgs[:-preserve_count] if preserve_count else conv_msgs
+    recent_msgs = conv_msgs[-preserve_count:] if preserve_count else []
 
     # Format history for summarization
     history_text = "\n".join(

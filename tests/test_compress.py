@@ -96,6 +96,29 @@ def test_five_turns():
     assert len(result) == len(msgs)
 
 
+@pytest.mark.parametrize("preserve_recent", [0, 2])
+def test_requested_recent_turns_and_remaining_history(preserve_recent):
+    msgs = make_messages(6)
+    prompts = []
+
+    def summarize(prompt):
+        prompts.append(prompt)
+        return "Dana is building NoteFlow."
+
+    result = compress(msgs, preserve_recent=preserve_recent, summarizer=summarize)
+    history_end = len(msgs) - preserve_recent * 2
+    history = msgs[1:history_end]
+    recent = msgs[history_end:]
+    assert result[0] == msgs[0]
+    assert result[2:] == recent
+    assert len(prompts) == 1
+    for message in history:
+        assert message["content"] in prompts[0]
+    for message in recent:
+        assert message["content"] not in prompts[0]
+    assert f"compressed from {len(history)} earlier messages" in result[1]["content"]
+
+
 def test_compression_prompt_does_not_promise_lossless_state():
     prompt = _build_compression_prompt("[USER]: important detail")
     assert "Do not claim that the summary is complete or lossless." in prompt

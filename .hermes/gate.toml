@@ -1,0 +1,25 @@
+version = 1
+
+[gate]
+fast_budget_seconds = 8.0
+full_required_local = true
+
+[[fast]]
+name = "pytest"
+argv = ["python3", "-m", "pytest", "tests/", "-q"]
+timeout_seconds = 8.0
+
+[[fast]]
+name = "diff-check"
+argv = ["git", "diff", "--check", "HEAD"]
+timeout_seconds = 2.0
+
+[[full]]
+name = "pytest"
+argv = ["python3", "-m", "pytest", "tests/", "-q"]
+timeout_seconds = 180.0
+
+[review]
+provider = "hermes-pr-review"
+argv = ["hermes-pr-review"]
+timeout_seconds = 600.0
