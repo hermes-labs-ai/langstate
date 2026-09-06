@@ -2,7 +2,9 @@
 Input: the OPUS-NIGHT-MANAGER morning brief section of HANDOFF.md (real artifact
 that future sessions re-read). Measures size reduction + fact survival receipt.
 """
-import sys, time, re
+import sys
+import time
+import re
 sys.path.insert(0, "/Users/rbr_lpci/dev/langstate/src")
 from langstate import compress, validate
 

@@ -39,4 +39,4 @@ def test_public_quickstarts_lead_with_the_pinned_deterministic_demo():
         demo_index = content.index("langstate demo")
         api_index = content.find("from langstate")
         assert api_index == -1 or demo_index < api_index, relative_path
-        assert "langstate==0.2.2" in content, relative_path
+        assert "langstate==0.2.3" in content, relative_path

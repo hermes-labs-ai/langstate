@@ -8,7 +8,8 @@ Provenance = validate(after, before): facts extracted from OUTPUT must appear in
 Demo boundary: the compressed morning brief from test_log_compression_20260704.py.
 Provenance needs no LLM call — extraction + substring check are deterministic.
 """
-import sys, re
+import sys
+import re
 sys.path.insert(0, "/Users/rbr_lpci/dev/langstate/src")
 from langstate import compress, validate
 

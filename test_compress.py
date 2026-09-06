@@ -1,6 +1,5 @@
 """Tests for langstate.compress — validates format, compression ratio, and state preservation."""
 
-import json
 import sys
 import os
 
