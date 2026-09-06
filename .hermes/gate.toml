@@ -11,6 +11,11 @@ timeout_seconds = 8.0
 
 [[fast]]
 name = "diff-check"
+argv = ["git", "diff", "--check", "origin/main...HEAD"]
+timeout_seconds = 2.0
+
+[[fast]]
+name = "worktree-diff-check"
 argv = ["git", "diff", "--check", "HEAD"]
 timeout_seconds = 2.0
 
