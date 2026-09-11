@@ -47,7 +47,7 @@ Requires Ollama running locally with qwen3:4b or qwen3:14b pulled for Ollama-bac
 
 ## Success means
 
-- 13/13 tests pass
+- Full suite passes: 34 passed, 3 skipped without a local Ollama model (37 total)
 - `compress(make_messages(20))` returns fewer tokens with state facts preserved
 - `compress(make_messages(5))` returns input unchanged (below threshold)
 
