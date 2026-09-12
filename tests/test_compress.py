@@ -4,7 +4,11 @@ import os
 
 import pytest
 
-from langstate.compress import _build_compression_prompt, compress, _count_messages_tokens
+from langstate.compress import (
+    _build_compression_prompt,
+    _count_messages_tokens,
+    compress,
+)
 
 # Live Ollama integration tests are opt-in so a default run never depends on
 # what happens to be listening on localhost:11434. Set LANGSTATE_LIVE_OLLAMA=1

@@ -11,7 +11,7 @@ Usage:
     response = client.chat.completions.create(messages=compressed, model="gpt-4o")
 """
 
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from langstate import adapters as _adapters
 
@@ -58,7 +58,7 @@ def compress(
     model: str = DEFAULT_MODEL,
     ollama_url: str = OLLAMA_URL,
     min_turns_to_compress: int = 6,
-    summarizer: Optional[Summarizer] = None,
+    summarizer: Summarizer | None = None,
 ) -> list[dict]:
     """Summarize older messages while keeping system and recent turns verbatim.
 
