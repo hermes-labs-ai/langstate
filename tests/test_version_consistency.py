@@ -4,10 +4,9 @@ Asserts the three in-repo version surfaces agree:
 pyproject.toml == langstate.__version__ == newest CHANGELOG heading.
 """
 
+import ast
 import re
 from pathlib import Path
-
-import langstate
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -26,8 +25,22 @@ def _pyproject_version() -> str:
     return match.group(1)
 
 
+def _source_version() -> str:
+    source = (ROOT / "src" / "langstate" / "__init__.py").read_text()
+    tree = ast.parse(source)
+    for node in tree.body:
+        if (
+            isinstance(node, ast.Assign)
+            and any(isinstance(target, ast.Name) and target.id == "__version__" for target in node.targets)
+            and isinstance(node.value, ast.Constant)
+            and isinstance(node.value.value, str)
+        ):
+            return node.value.value
+    raise AssertionError("__version__ assignment missing from src/langstate/__init__.py")
+
+
 def test_dunder_version_matches_pyproject():
-    assert langstate.__version__ == _pyproject_version()
+    assert _source_version() == _pyproject_version()
 
 
 def test_changelog_newest_heading_matches_pyproject():
