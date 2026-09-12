@@ -1,8 +1,13 @@
+<!-- Prompt v1.0 — 2026-09-12 -->
 # AGENTS.md — langstate
 
 `langstate` is a scaffold-aware context compression library for OpenAI-format
 messages. Its public API compresses messages and emits a lexical receipt for
 facts the caller explicitly chooses to preserve.
+
+Instruction order: PRIORITY 1: honor exact-history and safety boundaries.
+PRIORITY 2: preserve explicit facts and recent turns. PRIORITY 3: reduce token
+count. When these conflict, follow the lower-numbered priority.
 
 ## Use it for
 
