@@ -35,6 +35,7 @@ def _count_messages_tokens(messages: list[dict]) -> int:
 def _build_compression_prompt(text: str) -> str:
     """The scaffold compression instruction shared by every adapter."""
     return (
+        "Prompt v1.0.\n"
         "You are a scaffold state compressor. Turn a conversation history into a "
         "concise working-state summary. Prioritize these details when they appear:\n"
         "- Facts established (names, numbers, decisions, entities)\n"
