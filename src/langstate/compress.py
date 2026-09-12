@@ -1,5 +1,6 @@
 """
 langstate.compress — Scaffold-aware context compression for OpenAI-format messages.
+Compression prompt version: v1.0.
 
 Summarizes older conversation history into a scaffold message while keeping
 the system prompt and recent turns verbatim. Uses a local Ollama model
