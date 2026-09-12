@@ -80,7 +80,11 @@ def compress(
         TypeError: If the summarizer returns a non-string.
         RuntimeError: If the summarizer returns empty or whitespace-only text.
     """
-    if not isinstance(preserve_recent, int) or preserve_recent < 0:
+    if (
+        isinstance(preserve_recent, bool)
+        or not isinstance(preserve_recent, int)
+        or preserve_recent < 0
+    ):
         raise ValueError(
             f"preserve_recent must be a non-negative integer, got {preserve_recent!r}"
         )

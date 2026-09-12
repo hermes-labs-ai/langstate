@@ -116,7 +116,7 @@ def test_compression_prompt_does_not_promise_lossless_state():
     assert "Do not claim that the summary is complete or lossless." in prompt
 
 
-@pytest.mark.parametrize("preserve_recent", [-1, 1.5, "2", None])
+@pytest.mark.parametrize("preserve_recent", [-1, 1.5, "2", None, True, False])
 def test_invalid_preserve_recent_is_rejected_before_summarizing(preserve_recent):
     msgs = make_messages(8)
     calls = []
