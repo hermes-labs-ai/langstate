@@ -28,7 +28,8 @@ language scaffold in their context.
 
 ## When not to use
 
-- Short conversations (under 6 turns — compression is skipped automatically)
+- Short conversations (fewer than 6 user/assistant turn pairs — compression is
+  skipped automatically and the input is returned unchanged)
 - When exact verbatim history is required (prefer full context)
 - Real-time inference paths where the compression latency is unacceptable
 
@@ -73,8 +74,8 @@ Any callable `(prompt: str) -> str` works as a custom summarizer.
 ```python
 compress(
     messages,
-    preserve_recent=4,         # turn-pairs to keep verbatim
-    min_turns_to_compress=6,   # skip compression for short conversations
+    preserve_recent=4,         # turn-pairs to keep verbatim (non-negative int)
+    min_turns_to_compress=6,   # skip compression below this many turn-pairs
     summarizer=None,           # defaults to local Ollama qwen3:4b
 )
 ```

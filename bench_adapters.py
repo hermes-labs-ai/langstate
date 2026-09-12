@@ -1,9 +1,10 @@
 """
 langstate.bench_adapters — production adapter sweep on a 100-message corpus.
 
-Runs the three production adapters (local qwen3:14b, OpenAI gpt-4o-mini,
-Anthropic claude-opus-4-7) against the same 100-message conversation and
-records, per adapter:
+Runs the three production adapters from the shipping ``langstate.adapters``
+registry (current defaults: local qwen3:4b, OpenAI gpt-4o-mini, Anthropic
+claude-haiku-4-5) against the same 100-message conversation and records, per
+adapter:
 
     - compression ratio (token-proxy, 4 chars per token)
     - wall latency
@@ -30,11 +31,13 @@ import time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-if str(HERE) not in sys.path:
-    sys.path.insert(0, str(HERE))
+# Import the shipping package (src layout), not a repository-root copy.
+_SRC = HERE / "src"
+if str(_SRC) not in sys.path:
+    sys.path.insert(0, str(_SRC))
 
-from adapters import REGISTRY, AdapterUnavailable, build  # noqa: E402
-from compress import _count_messages_tokens, compress  # noqa: E402
+from langstate.adapters import REGISTRY, AdapterUnavailable, build  # noqa: E402
+from langstate.compress import _count_messages_tokens, compress  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # 100-message synthetic corpus with pre-declared ground-truth facts.

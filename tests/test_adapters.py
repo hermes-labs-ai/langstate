@@ -10,7 +10,7 @@ benches live in bench_adapters.py.
 
 import os
 
-from langstate.adapters import AdapterUnavailable, REGISTRY, build, probe
+from langstate.adapters import REGISTRY, AdapterUnavailable, build, probe
 from langstate.compress import _count_messages_tokens, compress
 
 

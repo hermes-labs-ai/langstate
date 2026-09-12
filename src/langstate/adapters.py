@@ -17,12 +17,13 @@ Production targets (one cheap default per provider, per the Hermes spec):
 
 from __future__ import annotations
 
+import http.client
 import json
 import os
 import time
 import urllib.error
 import urllib.request
-from typing import Callable, Optional
+from collections.abc import Callable
 
 Summarizer = Callable[[str], str]
 
@@ -82,7 +83,7 @@ DEFAULT_OPENAI_MODEL = "gpt-4o-mini"
 
 def openai(
     model: str = DEFAULT_OPENAI_MODEL,
-    api_key: Optional[str] = None,
+    api_key: str | None = None,
     url: str = OPENAI_URL,
     max_tokens: int = 4000,
     temperature: float = 0.2,
@@ -138,7 +139,7 @@ ANTHROPIC_VERSION = "2023-06-01"
 
 def anthropic(
     model: str = DEFAULT_ANTHROPIC_MODEL,
-    api_key: Optional[str] = None,
+    api_key: str | None = None,
     url: str = ANTHROPIC_URL,
     max_tokens: int = 4000,
     temperature: float = 0.2,
@@ -210,7 +211,15 @@ def probe(name: str) -> dict:
         out = fn("Say OK.")
     except AdapterUnavailable as e:
         return {"name": name, "available": False, "reason": str(e), "latency_ms": None}
-    except Exception as e:  # noqa: BLE001
+    except (
+        AttributeError,
+        http.client.HTTPException,
+        IndexError,
+        KeyError,
+        RuntimeError,
+        TypeError,
+        ValueError,
+    ) as e:
         return {"name": name, "available": False, "reason": f"{type(e).__name__}: {e}", "latency_ms": None}
     return {
         "name": name,
