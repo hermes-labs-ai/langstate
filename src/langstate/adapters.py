@@ -17,6 +17,7 @@ Production targets (one cheap default per provider, per the Hermes spec):
 
 from __future__ import annotations
 
+import http.client
 import json
 import os
 import time
@@ -210,7 +211,15 @@ def probe(name: str) -> dict:
         out = fn("Say OK.")
     except AdapterUnavailable as e:
         return {"name": name, "available": False, "reason": str(e), "latency_ms": None}
-    except (AttributeError, IndexError, KeyError, RuntimeError, TypeError, ValueError) as e:
+    except (
+        AttributeError,
+        http.client.HTTPException,
+        IndexError,
+        KeyError,
+        RuntimeError,
+        TypeError,
+        ValueError,
+    ) as e:
         return {"name": name, "available": False, "reason": f"{type(e).__name__}: {e}", "latency_ms": None}
     return {
         "name": name,
