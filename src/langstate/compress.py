@@ -17,7 +17,7 @@ from langstate import adapters as _adapters
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
 DEFAULT_MODEL = "qwen3:4b"
-PRESERVE_RECENT = 4  # keep last N user/assistant turns verbatim
+PRESERVE_RECENT = 4  # keep last N user/assistant turn pairs verbatim
 
 Summarizer = Callable[[str], str]
 
@@ -74,7 +74,17 @@ def compress(
 
     Returns:
         Compressed messages list in the same OpenAI format.
+
+    Raises:
+        ValueError: If ``preserve_recent`` is not a non-negative integer.
+        TypeError: If the summarizer returns a non-string.
+        RuntimeError: If the summarizer returns empty or whitespace-only text.
     """
+    if not isinstance(preserve_recent, int) or preserve_recent < 0:
+        raise ValueError(
+            f"preserve_recent must be a non-negative integer, got {preserve_recent!r}"
+        )
+
     if not messages:
         return []
 
@@ -108,6 +118,18 @@ def compress(
     if summarizer is None:
         summarizer = _adapters.ollama(model=model, url=ollama_url)
     summary = summarizer(_build_compression_prompt(history_text))
+
+    # Refuse to replace history with nothing: an empty scaffold would silently
+    # drop the compressed messages instead of summarizing them.
+    if not isinstance(summary, str):
+        raise TypeError(
+            f"summarizer must return str, got {type(summary).__name__}"
+        )
+    if not summary.strip():
+        raise RuntimeError(
+            f"summarizer returned empty output; refusing to drop "
+            f"{len(history_msgs)} messages without a summary"
+        )
 
     # Build compressed messages
     compressed = []

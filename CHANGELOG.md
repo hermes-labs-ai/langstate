@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+### Fixed
+- `compress` now rejects a negative or non-integer `preserve_recent` with
+  `ValueError` instead of silently splitting history at the wrong offset.
+- `compress` now raises `RuntimeError` when a summarizer returns empty or
+  whitespace-only text (and `TypeError` for a non-string), instead of
+  replacing the compressed history with an empty scaffold.
+- CI installs the package with `pip install -e ".[dev]"` and no longer falls
+  back to a bare `pytest` install that skipped the project's own dependencies.
+
+### Changed
+- Live Ollama integration tests are opt-in via `LANGSTATE_LIVE_OLLAMA=1`
+  rather than auto-detected by probing `localhost:11434` at collection time.
+- Removed the stale repository-root copies of `compress.py`, `adapters.py`,
+  `__init__.py`, `te_check.py`, and the root test modules; `src/langstate` is
+  the only source of truth and `bench_adapters.py` imports from it.
+- Documentation consistently describes `preserve_recent` and
+  `min_turns_to_compress` in user/assistant turn pairs, and `AGENTS.md` names
+  the shipping adapter defaults (qwen3:4b, claude-haiku-4-5).
+
 ## [0.2.3] - 2026-09-05
 
 ### Fixed

@@ -1,25 +1,17 @@
 """Tests for langstate.compress — validates format, compression ratio, and state preservation."""
 
-import urllib.error
-import urllib.request
+import os
 
 import pytest
 
 from langstate.compress import _build_compression_prompt, compress, _count_messages_tokens
 
-
-def _ollama_reachable() -> bool:
-    """Check if Ollama is running at localhost:11434. CI runners don't have it."""
-    try:
-        urllib.request.urlopen("http://localhost:11434/api/tags", timeout=2)
-        return True
-    except (urllib.error.URLError, OSError):
-        return False
-
-
+# Live Ollama integration tests are opt-in so a default run never depends on
+# what happens to be listening on localhost:11434. Set LANGSTATE_LIVE_OLLAMA=1
+# (with qwen3:4b pulled) to run them; an unreachable backend then fails loudly.
 requires_ollama = pytest.mark.skipif(
-    not _ollama_reachable(),
-    reason="requires local Ollama at :11434 (integration test)",
+    not os.environ.get("LANGSTATE_LIVE_OLLAMA"),
+    reason="live Ollama integration test; set LANGSTATE_LIVE_OLLAMA=1 to run",
 )
 
 
@@ -122,6 +114,33 @@ def test_requested_recent_turns_and_remaining_history(preserve_recent):
 def test_compression_prompt_does_not_promise_lossless_state():
     prompt = _build_compression_prompt("[USER]: important detail")
     assert "Do not claim that the summary is complete or lossless." in prompt
+
+
+@pytest.mark.parametrize("preserve_recent", [-1, 1.5, "2", None])
+def test_invalid_preserve_recent_is_rejected_before_summarizing(preserve_recent):
+    msgs = make_messages(8)
+    calls = []
+
+    def summarize(prompt):
+        calls.append(prompt)
+        return "should-not-run"
+
+    with pytest.raises(ValueError, match="preserve_recent"):
+        compress(msgs, preserve_recent=preserve_recent, summarizer=summarize)
+    assert calls == []
+
+
+@pytest.mark.parametrize("summary", ["", "   \n\t"])
+def test_blank_summary_does_not_silently_drop_history(summary):
+    msgs = make_messages(8)
+    with pytest.raises(RuntimeError, match="empty output"):
+        compress(msgs, summarizer=lambda _prompt: summary)
+
+
+def test_non_string_summary_is_rejected():
+    msgs = make_messages(8)
+    with pytest.raises(TypeError, match="summarizer must return str"):
+        compress(msgs, summarizer=lambda _prompt: None)
 
 
 @requires_ollama

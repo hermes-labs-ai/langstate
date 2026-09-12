@@ -16,10 +16,13 @@ Why they are excluded from current claims:
 
 - The JSON does not record a run time, source commit, full model identifier, or
   reproducible decoding/runtime configuration.
-- `bench_adapters.py` imports the legacy repository-root `adapters.py` and
-  `compress.py`, not the shipping modules under `src/langstate/`; both pairs
-  differ at current `main` commit
-  `b9a8b036ab65d0a74d27a580602cd12afd438235`.
+- When these rows were recorded, `bench_adapters.py` imported legacy
+  repository-root copies of `adapters.py` and `compress.py` (default models
+  qwen3:14b and claude-opus-4-7), not the shipping modules under
+  `src/langstate/`; both pairs differed at `main` commit
+  `b9a8b036ab65d0a74d27a580602cd12afd438235`. The root copies have since been
+  removed and the script now imports `langstate.*`, so a fresh run uses the
+  current shipping defaults rather than the configuration behind these bytes.
 - `bench_results.json` names missing-fact keys such as `corpus_size`,
   `arxiv_papers`, and `benchmarks` that are not in the current runner's
   `GROUND_TRUTH` list. The current script therefore cannot reproduce the stored

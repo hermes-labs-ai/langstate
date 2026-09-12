@@ -10,10 +10,12 @@
 ## Running tests
 
 ```bash
-python -m pytest test_compress.py -v
+python -m pytest tests/ -v
 ```
 
-Tests require Ollama running locally with `qwen3:4b` pulled.
+The default run is network-free. To also run the live Ollama integration
+tests, set `LANGSTATE_LIVE_OLLAMA=1` with Ollama running locally and
+`qwen3:4b` pulled.
 
 ## Code style
 
