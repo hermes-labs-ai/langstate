@@ -210,7 +210,7 @@ def probe(name: str) -> dict:
         out = fn("Say OK.")
     except AdapterUnavailable as e:
         return {"name": name, "available": False, "reason": str(e), "latency_ms": None}
-    except Exception as e:
+    except (AttributeError, IndexError, KeyError, RuntimeError, TypeError, ValueError) as e:
         return {"name": name, "available": False, "reason": f"{type(e).__name__}: {e}", "latency_ms": None}
     return {
         "name": name,
