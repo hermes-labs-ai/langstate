@@ -8,7 +8,7 @@ still present before sending the compressed list onward.
 Exercise that contract without a model, network call, API key, or Ollama:
 
 ```bash
-python -m pip install langstate==0.2.3
+python -m pip install langstate==0.2.4
 langstate demo
 ```
 

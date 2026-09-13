@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [0.2.4] - 2026-09-12
 
 ### Fixed
 - `compress` now rejects a negative or non-integer `preserve_recent` with
