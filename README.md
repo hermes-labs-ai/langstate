@@ -1,5 +1,7 @@
 # langstate
 
+[![Tests](https://github.com/hermes-labs-ai/langstate/actions/workflows/test.yml/badge.svg)](https://github.com/hermes-labs-ai/langstate/actions/workflows/test.yml)
+
 **Compress long LLM conversations into visible working state — then check that
 the literal facts you care about survived.**
 
