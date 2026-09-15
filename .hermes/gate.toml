@@ -25,6 +25,6 @@ argv = ["python3", "-m", "pytest", "tests/", "-q"]
 timeout_seconds = 180.0
 
 [review]
-provider = "hermes-pr-review"
-argv = ["hermes-pr-review"]
+provider = "coderabbit"
+argv = ["coderabbit", "review", "--agent", "--base", "main"]
 timeout_seconds = 600.0
