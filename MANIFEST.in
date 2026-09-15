@@ -4,6 +4,5 @@
 include BENCHMARK-PROVENANCE.md
 prune tests
 prune bench
-prune _workspace
 global-exclude te_check.py
 global-exclude *.pyc
