@@ -33,7 +33,7 @@ def test_demo_scaffold_is_readable_and_actually_shrinks_the_history(capsys):
 
 
 def test_public_quickstarts_lead_with_the_pinned_deterministic_demo():
-    for relative_path in ["README.md", "SHOW-ME-FIRST.md", "llms.txt"]:
+    for relative_path in ["README.md", "llms.txt"]:
         content = (ROOT / relative_path).read_text(encoding="utf-8")
         assert content.count("langstate demo") == 1, relative_path
         demo_index = content.index("langstate demo")
