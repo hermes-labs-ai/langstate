@@ -24,6 +24,7 @@ semantic fidelity.
 
 ```bash
 python -m pip install langstate==0.2.3
+langstate --version
 langstate demo
 ```
 
