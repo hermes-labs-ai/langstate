@@ -2,7 +2,12 @@
 
 ## Unreleased
 
+## [0.2.4] - 2026-09-19
+
+- Count minimum compression turns by user messages so tool exchanges cannot trigger compression early.
 ### Fixed
+- Preserve whole recent user-initiated turns, including assistant tool calls and
+  their results, instead of cutting the history at an arbitrary message count.
 - `compress` now rejects a negative or non-integer `preserve_recent` with
   `ValueError` instead of silently splitting history at the wrong offset.
 - `compress` now raises `RuntimeError` when a summarizer returns empty or

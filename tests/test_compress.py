@@ -186,3 +186,50 @@ def test_state_preservation():
     }
     # At least the project name must appear in scaffold
     assert checks["project name (Dana/NoteFlow)"], f"Project name not in scaffold: {scaffold_content[:300]}"
+
+
+def test_recent_tool_call_turn_is_preserved_as_a_complete_tail():
+    recent_turn = [
+        {"role": "user", "content": "What is the weather?"},
+        {"role": "assistant", "content": None, "tool_calls": [
+            {"id": "call_weather", "type": "function",
+             "function": {"name": "weather", "arguments": "{}"}}
+        ]},
+        {"role": "tool", "tool_call_id": "call_weather", "content": "sunny"},
+        {"role": "assistant", "content": "It is sunny."},
+    ]
+    result = compress(make_messages(6) + recent_turn, preserve_recent=1,
+                      summarizer=lambda _: "Earlier conversation state.")
+    assert result[2:] == recent_turn
+    assert result[3]["tool_calls"][0]["id"] == result[4]["tool_call_id"]
+
+
+@pytest.mark.parametrize("preserve_recent", [6, 7])
+def test_all_user_turns_requested_are_not_compressed(preserve_recent):
+    msgs = make_messages(6) + [
+        {"role": "assistant", "content": "Additional assistant message."},
+    ]
+    calls = []
+    result = compress(msgs, preserve_recent=preserve_recent,
+                      summarizer=lambda prompt: calls.append(prompt) or "unused")
+    assert result == msgs
+    assert calls == []
+
+
+def test_tool_exchanges_do_not_inflate_minimum_turn_count():
+    messages = []
+    for i in range(4):
+        messages.extend([
+            {"role": "user", "content": f"Question {i}"},
+            {"role": "assistant", "content": None, "tool_calls": [
+                {"id": f"call_{i}", "type": "function",
+                 "function": {"name": "lookup", "arguments": "{}"}},
+            ]},
+            {"role": "tool", "tool_call_id": f"call_{i}", "content": "result"},
+            {"role": "assistant", "content": "Answer"},
+        ])
+    calls = []
+    result = compress(messages, min_turns_to_compress=6,
+                      summarizer=lambda prompt: calls.append(prompt) or "summary")
+    assert result == messages
+    assert calls == []

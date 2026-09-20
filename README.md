@@ -23,7 +23,7 @@ semantic fidelity.
 ## Try it in two minutes
 
 ```bash
-python -m pip install langstate==0.2.3
+python -m pip install langstate==0.2.4
 langstate --version
 langstate demo
 ```
@@ -189,6 +189,11 @@ compress(
 
 validate(before, after, facts=None)
 ```
+
+`preserve_recent` counts recent user-initiated turns. Each retained turn includes
+its assistant messages, tool calls, and tool results verbatim, so the retained
+tail does not begin in the middle of a tool exchange. Older history remains
+a lossy summary; retain the original messages when exact replay is required.
 
 See `Receipt.as_dict()` for a JSON-friendly receipt. The package is
 Apache-2.0 licensed.

@@ -64,11 +64,12 @@ def compress(
 
     Args:
         messages: List of dicts with "role" and "content" keys.
-        preserve_recent: Number of recent user/assistant turn pairs to keep verbatim.
+        preserve_recent: Number of recent user-initiated turns to keep verbatim,
+            including their assistant messages and tool exchanges.
         model: Ollama model to use when no summarizer is given (back-compat).
         ollama_url: Ollama API endpoint (back-compat).
-        min_turns_to_compress: Don't compress if fewer than this many complete
-            user/assistant turn pairs are present.
+        min_turns_to_compress: Don't compress if fewer than this many
+            user-initiated turns are present.
         summarizer: Optional ``summarize(prompt) -> str`` callable. If None, falls back
             to a local Ollama adapter (qwen3:4b) for back-compat with the MVP.
 
@@ -92,8 +93,8 @@ def compress(
     if not messages:
         return []
 
-    # Count actual user/assistant turns, not total messages
-    n_turns = sum(1 for m in messages if m.get("role") in ("user", "assistant")) // 2
+    # Tool-call assistant messages do not start additional user turns.
+    n_turns = sum(m.get("role") == "user" for m in messages)
     if n_turns < min_turns_to_compress:
         return list(messages)
 
@@ -104,14 +105,21 @@ def compress(
     if not conv_msgs:
         return list(messages)
 
-    # Split: history to compress vs recent turns to preserve
-    # preserve_recent refers to turn pairs, so preserve_recent*2 messages
-    preserve_count = preserve_recent * 2
-    if len(conv_msgs) <= preserve_count:
-        return list(messages)
-
-    history_msgs = conv_msgs[:-preserve_count] if preserve_count else conv_msgs
-    recent_msgs = conv_msgs[-preserve_count:] if preserve_count else []
+    # Keep entire user-initiated turns, including assistant tool calls and
+    # their results. Counting raw messages can split a tool exchange.
+    if preserve_recent:
+        user_indexes = [
+            index for index, message in enumerate(conv_msgs)
+            if message.get("role") == "user"
+        ]
+        if len(user_indexes) <= preserve_recent:
+            return list(messages)
+        recent_start = user_indexes[-preserve_recent]
+        history_msgs = conv_msgs[:recent_start]
+        recent_msgs = conv_msgs[recent_start:]
+    else:
+        history_msgs = conv_msgs
+        recent_msgs = []
 
     # Format history for summarization
     history_text = "\n".join(
