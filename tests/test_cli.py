@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+from langstate import __version__
 from langstate.cli import main
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,4 +40,4 @@ def test_public_quickstarts_lead_with_the_pinned_deterministic_demo():
         demo_index = content.index("langstate demo")
         api_index = content.find("from langstate")
         assert api_index == -1 or demo_index < api_index, relative_path
-        assert "langstate==0.2.3" in content, relative_path
+        assert f"langstate=={__version__}" in content, relative_path
