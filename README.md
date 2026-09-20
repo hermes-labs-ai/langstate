@@ -28,6 +28,12 @@ langstate --version
 langstate demo
 ```
 
+Or install the CLI from the [Hermes Labs Homebrew tap](https://github.com/hermes-labs-ai/homebrew-tap):
+
+```bash
+brew install hermes-labs-ai/tap/langstate
+```
+
 It prints the compressed messages and a machine-readable receipt showing that
 both named facts survived and that the history got smaller. The proof needs no model, API key, network call, or
 Ollama installation.
