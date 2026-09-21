@@ -5,6 +5,10 @@
 **Compress long LLM conversations into visible working state — then check that
 the literal facts you care about survived.**
 
+langstate is developed by [Hermes Labs](https://hermes-labs.ai).
+
+Hermes Labs studies failure modes in agent and LLM systems, develops open-source tools that treat language as part of the runtime, and works with teams to remediate reliability failures in production.
+
 `langstate` is a small experimental Python library for OpenAI-format message
 lists. It keeps system messages and recent turns verbatim, summarizes older
 history into a visible `[SCAFFOLD STATE]` system message, and returns the same
