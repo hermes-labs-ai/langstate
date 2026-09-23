@@ -1,13 +1,17 @@
-# langstate
+<div align="center">
 
-[![Tests](https://github.com/hermes-labs-ai/langstate/actions/workflows/test.yml/badge.svg)](https://github.com/hermes-labs-ai/langstate/actions/workflows/test.yml)
+<h1>langstate</h1>
 
 **Compress long LLM conversations into visible working state — then check that
 the literal facts you care about survived.**
 
 langstate is developed by [Hermes Labs](https://hermes-labs.ai).
 
-Hermes Labs studies failure modes in agent and LLM systems, develops open-source tools that treat language as part of the runtime, and works with teams to remediate reliability failures in production.
+Hermes Labs is an agentic infrastructure company building the reliability layer for autonomous systems.
+
+[![Tests](https://github.com/hermes-labs-ai/langstate/actions/workflows/test.yml/badge.svg)](https://github.com/hermes-labs-ai/langstate/actions/workflows/test.yml)
+
+</div>
 
 `langstate` is a small experimental Python library for OpenAI-format message
 lists. It keeps system messages and recent turns verbatim, summarizes older

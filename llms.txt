@@ -83,4 +83,4 @@ compress(
 ## Source
 
 https://github.com/hermes-labs-ai/langstate
-Apache-2.0. Part of the Hermes Labs audit infrastructure stack.
+Apache-2.0. Part of the Hermes Labs reliability layer for autonomous systems.
