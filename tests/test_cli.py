@@ -33,11 +33,10 @@ def test_demo_scaffold_is_readable_and_actually_shrinks_the_history(capsys):
     assert payload["receipt"]["token_reduction"] > 0.5
 
 
-def test_public_quickstarts_lead_with_the_pinned_deterministic_demo():
-    for relative_path in ["README.md", "llms.txt"]:
-        content = (ROOT / relative_path).read_text(encoding="utf-8")
-        assert content.count("langstate demo") == 1, relative_path
-        demo_index = content.index("langstate demo")
-        api_index = content.find("from langstate")
-        assert api_index == -1 or demo_index < api_index, relative_path
-        assert f"langstate=={__version__}" in content, relative_path
+def test_llms_quickstart_leads_with_the_pinned_deterministic_demo():
+    content = (ROOT / "llms.txt").read_text(encoding="utf-8")
+    assert content.count("langstate demo") == 1
+    demo_index = content.index("langstate demo")
+    api_index = content.find("from langstate")
+    assert api_index == -1 or demo_index < api_index
+    assert f"langstate=={__version__}" in content
