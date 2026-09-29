@@ -98,28 +98,29 @@ def compress(
     if n_turns < min_turns_to_compress:
         return list(messages)
 
-    # Separate system prompt from conversation
-    system_msgs = [m for m in messages if m.get("role") == "system"]
-    conv_msgs = [m for m in messages if m.get("role") != "system"]
-
-    if not conv_msgs:
+    if not any(m.get("role") != "system" for m in messages):
         return list(messages)
 
     # Keep entire user-initiated turns, including assistant tool calls and
     # their results. Counting raw messages can split a tool exchange.
     if preserve_recent:
         user_indexes = [
-            index for index, message in enumerate(conv_msgs)
+            index for index, message in enumerate(messages)
             if message.get("role") == "user"
         ]
         if len(user_indexes) <= preserve_recent:
             return list(messages)
         recent_start = user_indexes[-preserve_recent]
-        history_msgs = conv_msgs[:recent_start]
-        recent_msgs = conv_msgs[recent_start:]
     else:
-        history_msgs = conv_msgs
-        recent_msgs = []
+        recent_start = len(messages)
+
+    # System messages before the cut are kept verbatim ahead of the scaffold;
+    # system messages inside the recent tail stay in place so the retained
+    # suffix is returned verbatim and in its original order.
+    older = messages[:recent_start]
+    system_msgs = [m for m in older if m.get("role") == "system"]
+    history_msgs = [m for m in older if m.get("role") != "system"]
+    recent_msgs = messages[recent_start:]
 
     # Format history for summarization
     history_text = "\n".join(
