@@ -17,6 +17,8 @@ The default run is network-free. To also run the live Ollama integration
 tests, set `LANGSTATE_LIVE_OLLAMA=1` with Ollama running locally and
 `qwen3:4b` pulled.
 
+Bugs and feature requests: https://github.com/hermes-labs-ai/langstate/issues
+
 ## Code style
 
 - Line length: 100
