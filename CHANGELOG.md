@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+- `compress` now returns a system message inside the preserved recent turns in
+  its original position instead of moving it ahead of the scaffold state.
+
 ## [0.2.4] - 2026-09-19
 
 - Count minimum compression turns by user messages so tool exchanges cannot trigger compression early.
