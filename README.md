@@ -136,7 +136,9 @@ contract; automatic fact extraction is a convenience heuristic.
 
 ## How it works
 
-For conversations of at least six user/assistant turn pairs, `compress`:
+By default, `compress` starts compressing at six user-initiated turns. A turn
+begins with a user message and includes the following assistant messages and
+tool exchanges up to the next user message. The function:
 
 1. retains all `system` messages and the requested recent suffix verbatim;
 2. sends the older non-system messages to the selected summarizer;
