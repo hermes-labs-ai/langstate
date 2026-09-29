@@ -14,7 +14,7 @@ from langstate.compress import (
 # what happens to be listening on localhost:11434. Set LANGSTATE_LIVE_OLLAMA=1
 # (with qwen3:4b pulled) to run them; an unreachable backend then fails loudly.
 requires_ollama = pytest.mark.skipif(
-    not os.environ.get("LANGSTATE_LIVE_OLLAMA"),
+    os.environ.get("LANGSTATE_LIVE_OLLAMA") != "1",
     reason="live Ollama integration test; set LANGSTATE_LIVE_OLLAMA=1 to run",
 )
 
