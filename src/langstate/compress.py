@@ -17,7 +17,7 @@ from langstate import adapters as _adapters
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
 DEFAULT_MODEL = "qwen3:4b"
-PRESERVE_RECENT = 4  # keep last N user/assistant turn pairs verbatim
+PRESERVE_RECENT = 4  # keep last N user-initiated turns verbatim
 
 Summarizer = Callable[[str], str]
 

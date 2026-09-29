@@ -17,7 +17,7 @@ count. When these conflict, follow the lower-numbered priority.
 
 ## Do not use it for
 
-- conversations under 6 user/assistant turn pairs (compression is skipped automatically)
+- conversations under 6 user-initiated turns (compression is skipped by default)
 - paths requiring exact verbatim history
 - real-time inference where compression latency is a concern
 
@@ -48,7 +48,7 @@ Ollama running locally and qwen3:4b pulled. Otherwise they are skipped.
 
 - `compress(messages)` returns a shorter list in the same OpenAI format
 - System prompts preserved verbatim
-- Last 4 turn-pairs preserved verbatim
+- Last 4 user-initiated turns preserved verbatim by default, including tool exchanges
 - Older turns → `[SCAFFOLD STATE — compressed from N earlier messages]\n<summary>` system message
 
 ## Success means

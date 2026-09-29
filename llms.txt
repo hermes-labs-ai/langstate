@@ -11,7 +11,7 @@ facts remain present after compression.
 older turns summarized:
 
 - System prompts kept verbatim
-- Last 4 turn-pairs kept verbatim
+- Last 4 user-initiated turns kept verbatim by default, including tool exchanges
 - Older turns summarized into a `[SCAFFOLD STATE]` system message
 - Output is valid OpenAI chat format, drop-in for any OpenAI-compatible API
 - `validate(before, after, facts=[...])` reports which selected facts remain
@@ -28,8 +28,8 @@ language scaffold in their context.
 
 ## When not to use
 
-- Short conversations (fewer than 6 user/assistant turn pairs — compression is
-  skipped automatically and the input is returned unchanged)
+- Short conversations (fewer than 6 user-initiated turns — by default, compression
+  is skipped and the input is returned unchanged)
 - When exact verbatim history is required (prefer full context)
 - Real-time inference paths where the compression latency is unacceptable
 
@@ -74,8 +74,8 @@ Any callable `(prompt: str) -> str` works as a custom summarizer.
 ```python
 compress(
     messages,
-    preserve_recent=4,         # turn-pairs to keep verbatim (non-negative int)
-    min_turns_to_compress=6,   # skip compression below this many turn-pairs
+    preserve_recent=4,         # user-initiated turns to keep (non-negative int)
+    min_turns_to_compress=6,    # skip below this many user-initiated turns
     summarizer=None,           # defaults to local Ollama qwen3:4b
 )
 ```
