@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add an opt-in Cake v4 session handoff example with paired tool evidence and explicit current-source checks.
+
 ## [0.2.4] - 2026-09-19
 
 - Count minimum compression turns by user messages so tool exchanges cannot trigger compression early.
