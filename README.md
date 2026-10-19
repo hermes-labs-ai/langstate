@@ -48,7 +48,7 @@ Ollama installation.
 
 Python 3.10+; no runtime dependencies beyond the standard library. To use the
 default summarizer after the proof, prepare a local
-[Ollama](https://ollama.ai) model once:
+[Ollama](https://ollama.com/) model once:
 
 ```bash
 ollama pull qwen3:4b
