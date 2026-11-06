@@ -233,3 +233,18 @@ def test_tool_exchanges_do_not_inflate_minimum_turn_count():
                       summarizer=lambda prompt: calls.append(prompt) or "summary")
     assert result == messages
     assert calls == []
+
+
+def test_mid_conversation_system_message_in_recent_tail_keeps_its_position():
+    mid_system = {"role": "system", "content": "From now on, answer in French."}
+    msgs = make_messages(7)
+    # Insert after the 6th user turn's assistant reply, i.e. inside the last 4 turns.
+    insert_at = 1 + 2 * 6
+    msgs = msgs[:insert_at] + [mid_system] + msgs[insert_at:]
+    result = compress(msgs, summarizer=lambda _: "Earlier conversation state.")
+
+    recent_start = 1 + 2 * 3  # system prompt + 3 compressed turns
+    assert result[0] == msgs[0]
+    assert result[1]["content"].startswith("[SCAFFOLD STATE — compressed from 6 earlier messages]")
+    assert result[2:] == msgs[recent_start:]
+    assert sum(m == mid_system for m in result) == 1
